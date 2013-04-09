@@ -16,6 +16,7 @@
 
 void monitor_clear();
 void monitor_putchar(char c);
+void monitor_putdec(uint32_t i);
 void monitor_put(char *c);
 
 #endif

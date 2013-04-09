@@ -1,14 +1,23 @@
 #include "common.h"
 #include "monitor.h"
+#include "descriptor_tables.h"
 
 /**
  * Print the test message on screen to indicate the kernel has successfully
  * loaded and run.
  */
 void print_test_msg(void) {
-    monitor_clear();
     monitor_put("Welcome to xkernel\n");
     monitor_put("This project is currently being developed by Tianyi Wang.\n");
+}
+
+/**
+ * Trigger some interrupts to make sure ISRs are working correctly.
+ */
+void trigger_test_interrupts() {
+    monitor_put("\nTrigger some interrupts for testing purpose:\n");
+    asm volatile ("int $0x0");
+    asm volatile ("int $0x8");
 }
 
 /**
@@ -26,5 +35,9 @@ void kmain(void) {
         return;
     }
 
+    init_descriptor_tables();
+    monitor_clear();
+
     print_test_msg();
+    trigger_test_interrupts();
 }

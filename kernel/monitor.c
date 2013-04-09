@@ -86,6 +86,25 @@ void monitor_putchar(char c) {
 }
 
 /**
+ * Write a decimal number on the screen.
+ */
+void monitor_putdec(uint32_t i) {
+    if (i == 0) {
+        monitor_putchar('0');
+        return;
+    }
+
+    uint32_t leftover = i / 10;
+    char digit = '0' + i - leftover * 10;
+
+    if (leftover != 0) {
+        monitor_putdec(leftover);
+    }
+
+    monitor_putchar(digit);
+}
+
+/**
  * Write a string of characters on the screen.
  */
 void monitor_put(char *c) {

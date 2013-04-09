@@ -63,7 +63,7 @@ static void gdt_set_gate(int32_t num, uint32_t base, uint32_t limit,
  * Initialize the IDT.
  */
 static void init_idt() {
-    idt_ptr.limit = sizeof(idt_entry_struct) * 256 - 1;
+    idt_ptr.limit = (sizeof(idt_entry_struct) * 256) - 1;
     idt_ptr.base  = (uint32_t)&idt_entries;
 
     idt_set_gate( 0, (uint32_t)isr0 , 0x08, 0xEE);

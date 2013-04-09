@@ -1,8 +1,9 @@
-SOURCES=loader.o desc_tables.o xkernel.o common.o monitor.o descriptor_tables.o
+SOURCES=loader.o desc_tables.o interrupt.o xkernel.o common.o monitor.o \
+		descriptor_tables.o isr.o
 
 CC=gcc
-CFLAGS=-Wall -Wextra -Werror -nostdlib -nostartfiles -nodefaultlibs \
-	   -nostdinc -fno-builtin -fno-stack-protector -m32 -c
+CFLAGS=-Wall -Wextra -nostdlib -nostartfiles -nodefaultlibs -nostdinc \
+	   -fno-builtin -fno-stack-protector -m32 -c
 LD=ld
 LDFLAGS=-T scripts/linker.ld -melf_i386
 AS=nasm
@@ -25,6 +26,9 @@ loader.o: arch/x86/loader.s
 desc_tables.o: arch/x86/desc_tables.s
 	$(AS) $(ASFLAGS) -o $@ arch/x86/desc_tables.s
 
+interrupt.o: arch/x86/interrupt.s
+	$(AS) $(ASFLAGS) -o $@ arch/x86/interrupt.s
+
 xkernel.o: kernel/xkernel.c kernel/common.h kernel/monitor.h
 	$(CC) $(CFLAGS) -o $@ kernel/xkernel.c
 
@@ -37,3 +41,6 @@ monitor.o: kernel/monitor.h kernel/monitor.c kernel/common.h
 descriptor_tables.o: kernel/descriptor_tables.h kernel/descriptor_tables.c \
 	kernel/common.h
 	$(CC) $(CFLAGS) -o $@ kernel/descriptor_tables.c
+
+isr.o: kernel/isr.h kernel/isr.c kernel/common.h kernel/monitor.h
+	$(CC) $(CFLAGS) -o $@ kernel/isr.c

@@ -33,3 +33,13 @@ uint32_t inl(uint16_t port) {
     asm volatile ("inl %1, %0" : "=a" (ret) : "Nd" (port));
     return ret;
 }
+
+/**
+ * Write len copies of val into dest.
+ */
+void memset(uint8_t *dest, uint8_t val, uint32_t len) {
+    uint8_t *cur = dest;
+    for (; len != 0; len--) {
+        *cur++ = val;
+    }
+}
