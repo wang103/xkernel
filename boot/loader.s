@@ -4,7 +4,7 @@ global loader       ; making entry point visible to the linker
 global magic        ; used this in kmain
 global mbd          ; used this in kmain
 
-extern kmain        ; defined in kmain.cpp
+extern kmain        ; defined in xkernel.c
 
 ; Setting up the Multiboot header - see GRUB docs for details.
 MODULEALIGN equ 1<<0                    ; align modules on page boundaries
