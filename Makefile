@@ -4,7 +4,7 @@
 
 SOURCES=boot/loader.o
 
-CFLAGS=
+CFLAGS=-Wall -Wextra -Werror
 LD=ld
 LDFLAGS=-T link.ld
 AS=nasm
