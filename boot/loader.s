@@ -16,9 +16,9 @@ CHECKSUM    equ -(MAGIC + FLAGS)        ; checksum required
 section .text
 
 align 4
-    dd MAGIC
-    dd FLAGS
-    dd CHECKSUM
+    dd MAGIC        ; GRUB search for this value in kernel file
+    dd FLAGS        ; GRUB settings
+    dd CHECKSUM     ; To ensure the above values are correct
 
 ; Reserve initial kernel stack space.
 STACKSIZE   equ 0x4000              ; 16k

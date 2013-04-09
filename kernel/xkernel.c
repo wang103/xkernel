@@ -1,4 +1,4 @@
-#include <stdint.h>
+#include "common.h"
 
 /**
  * Print the test message on screen to indicate the kernel has successfully
@@ -24,6 +24,9 @@ void print_test_msg(void) {
     videoram[13] = 0x09;
 }
 
+/**
+ * The starting function of the kernel.
+ */
 void kmain(void) {
 
     extern uint32_t magic;

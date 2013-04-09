@@ -1,7 +1,8 @@
-SOURCES=loader.o xkernel.o
+SOURCES=loader.o xkernel.o common.o
 
 CC=gcc
-CFLAGS=-Wall -Wextra -Werror -nostdlib -nostartfiles -nodefaultlibs -m32 -c
+CFLAGS=-Wall -Wextra -Werror -nostdlib -nostartfiles -nodefaultlibs \
+	   -nostdinc -fno-builtin -fno-stack-protector -m32 -c
 LD=ld
 LDFLAGS=-T boot/linker.ld -melf_i386
 AS=nasm
@@ -21,5 +22,8 @@ xkernel: $(SOURCES) boot/linker.ld
 loader.o: boot/loader.s
 	$(AS) $(ASFLAGS) -o $@ boot/loader.s
 
-xkernel.o: kernel/xkernel.c
+xkernel.o: kernel/xkernel.c kernel/common.h
 	$(CC) $(CFLAGS) -o $@ kernel/xkernel.c
+
+common.o: kernel/common.h kernel/common.c
+	$(CC) $(CFLAGS) -o $@ kernel/common.c
