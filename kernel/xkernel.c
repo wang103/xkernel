@@ -9,18 +9,19 @@ void print_test_msg(void) {
     volatile unsigned char *videoram = (unsigned char *)0xB8000;
 
     videoram[0] = 'W';
-    videoram[1] = 0x07;
+    videoram[1] = 0x09;
     videoram[2] = 'e';
-    videoram[3] = 0x07;
+    videoram[3] = 0x09;
     videoram[4] = 'l';
-    videoram[5] = 0x07;
+    videoram[5] = 0x09;
     videoram[6] = 'c';
-    videoram[7] = 0x07;
+    videoram[7] = 0x09;
     videoram[8] = 'o';
-    videoram[9] = 0x07;
+    videoram[9] = 0x09;
     videoram[10] = 'm';
-    videoram[11] = 0x07;
+    videoram[11] = 0x09;
     videoram[12] = 'e';
+    videoram[13] = 0x09;
 }
 
 void kmain(void) {

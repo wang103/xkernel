@@ -12,6 +12,9 @@ all: xkernel
 clean:
 	rm *.o xkernel
 
+run:
+	qemu-system-i386 -kernel xkernel
+
 xkernel: $(SOURCES) boot/linker.ld
 	$(LD) $(LDFLAGS) -o $@ $(SOURCES)
 
