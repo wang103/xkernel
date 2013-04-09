@@ -1,27 +1,14 @@
 #include "common.h"
+#include "monitor.h"
 
 /**
  * Print the test message on screen to indicate the kernel has successfully
  * loaded and run.
  */
 void print_test_msg(void) {
-    
-    volatile unsigned char *videoram = (unsigned char *)0xB8000;
-
-    videoram[0] = 'W';
-    videoram[1] = 0x09;
-    videoram[2] = 'e';
-    videoram[3] = 0x09;
-    videoram[4] = 'l';
-    videoram[5] = 0x09;
-    videoram[6] = 'c';
-    videoram[7] = 0x09;
-    videoram[8] = 'o';
-    videoram[9] = 0x09;
-    videoram[10] = 'm';
-    videoram[11] = 0x09;
-    videoram[12] = 'e';
-    videoram[13] = 0x09;
+    monitor_clear();
+    monitor_put("Welcome to xkernel\n");
+    monitor_put("This project is currently being developed by Tianyi Wang.\n");
 }
 
 /**

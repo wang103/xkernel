@@ -1,4 +1,4 @@
-SOURCES=loader.o xkernel.o common.o
+SOURCES=loader.o xkernel.o common.o monitor.o
 
 CC=gcc
 CFLAGS=-Wall -Wextra -Werror -nostdlib -nostartfiles -nodefaultlibs \
@@ -22,8 +22,11 @@ xkernel: $(SOURCES) boot/linker.ld
 loader.o: boot/loader.s
 	$(AS) $(ASFLAGS) -o $@ boot/loader.s
 
-xkernel.o: kernel/xkernel.c kernel/common.h
+xkernel.o: kernel/xkernel.c kernel/common.h kernel/monitor.h
 	$(CC) $(CFLAGS) -o $@ kernel/xkernel.c
 
 common.o: kernel/common.h kernel/common.c
 	$(CC) $(CFLAGS) -o $@ kernel/common.c
+
+monitor.o: kernel/monitor.h kernel/monitor.c kernel/common.h
+	$(CC) $(CFLAGS) -o $@ kernel/monitor.c
