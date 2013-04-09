@@ -1,22 +1,22 @@
-# The C and C++ rules are setup by default.
-# The only one that needs changing is the assembler rule,
-# as we use nasm instead of GNU as.
+SOURCES=loader.o xkernel.o
 
-SOURCES=boot/loader.o
-
-CFLAGS=-Wall -Wextra -Werror
+CC=gcc
+CFLAGS=-Wall -Wextra -Werror -nostdlib -nostartfiles -nodefaultlibs -m32 -c
 LD=ld
-LDFLAGS=-T link.ld
+LDFLAGS=-T boot/linker.ld -melf_i386
 AS=nasm
-ASFLAGS=-f elf
+ASFLAGS=-felf
 
-all: $(SOURCES) link
+all: xkernel
 
 clean:
 	rm *.o xkernel
 
-link:
-	$(LD) $(LDFLAGS) -o xkernel $(SOURCES)
+xkernel: $(SOURCES) boot/linker.ld
+	$(LD) $(LDFLAGS) -o $@ $(SOURCES)
 
-*.o:
-	$(AS) $(ASFLAGS) $<
+loader.o: boot/loader.s
+	$(AS) $(ASFLAGS) -o $@ boot/loader.s
+
+xkernel.o: kernel/xkernel.c
+	$(CC) $(CFLAGS) -o $@ kernel/xkernel.c

@@ -12,7 +12,7 @@ Source Tree:
 arch/:      Architecture-specific source
 boot/:      Bootloader related
 kernel/:    Core subsystems
-
+scripts/:   Various scripts used for building stuffs
 
 To Compile:
 Simply type 'make' to compile the kernel sources. This
