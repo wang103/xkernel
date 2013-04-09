@@ -1,17 +1,13 @@
-xkernel
-=======
+      xkernel 1.0
 
 Author: Tianyi Wang
 Email: wang103@illinois.edu
 
-Source
-======
+Source Tree:
 arch/:      Architecture-specific source
 kernel/:    Core subsystems
 
-To Compile
-==========
+To Compile:
 
-To Run
-======
-The kernel can be run using Bochs.
+To Run:
+The kernel can be run using Bochs emulator.
