@@ -1,4 +1,5 @@
 [GLOBAL gdt_flush]          ; Used in descriptor_tables.c
+[GLOBAL idt_flush]          ; Used in descriptor_tables.c
 
 gdt_flush:
     mov eax, [esp + 4]      ; Get the pointer to the GDT as first parameter
@@ -14,4 +15,9 @@ gdt_flush:
     jmp 0x08:.flush         ; 0x08 is the offset in the GDT to the code segment,
                             ; do a far jump to set the cs implicitly.
 .flush:
+    ret
+
+idt_flush:
+    mov eax, [esp + 4]      ; Get the pointer to the IDT as first parameter
+    lidt [eax]              ; Load the new IDT pointer
     ret
