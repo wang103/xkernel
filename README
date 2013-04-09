@@ -10,7 +10,6 @@ This kernel is in ELF format.
 
 Source Tree:
 arch/:      Architecture-specific source
-boot/:      Bootloader related
 kernel/:    Core subsystems
 scripts/:   Various scripts used for building stuffs
 

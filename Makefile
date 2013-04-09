@@ -4,7 +4,7 @@ CC=gcc
 CFLAGS=-Wall -Wextra -Werror -nostdlib -nostartfiles -nodefaultlibs \
 	   -nostdinc -fno-builtin -fno-stack-protector -m32 -c
 LD=ld
-LDFLAGS=-T boot/linker.ld -melf_i386
+LDFLAGS=-T scripts/linker.ld -melf_i386
 AS=nasm
 ASFLAGS=-felf
 
@@ -16,11 +16,11 @@ clean:
 run:
 	qemu-system-i386 -kernel xkernel
 
-xkernel: $(SOURCES) boot/linker.ld
+xkernel: $(SOURCES) scripts/linker.ld
 	$(LD) $(LDFLAGS) -o $@ $(SOURCES)
 
-loader.o: boot/loader.s
-	$(AS) $(ASFLAGS) -o $@ boot/loader.s
+loader.o: arch/x86/loader.s
+	$(AS) $(ASFLAGS) -o $@ arch/x86/loader.s
 
 xkernel.o: kernel/xkernel.c kernel/common.h kernel/monitor.h
 	$(CC) $(CFLAGS) -o $@ kernel/xkernel.c
