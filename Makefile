@@ -1,4 +1,4 @@
-SOURCES=loader.o xkernel.o common.o monitor.o
+SOURCES=loader.o desc_tables.o xkernel.o common.o monitor.o descriptor_tables.o
 
 CC=gcc
 CFLAGS=-Wall -Wextra -Werror -nostdlib -nostartfiles -nodefaultlibs \
@@ -22,6 +22,9 @@ xkernel: $(SOURCES) scripts/linker.ld
 loader.o: arch/x86/loader.s
 	$(AS) $(ASFLAGS) -o $@ arch/x86/loader.s
 
+desc_tables.o: arch/x86/desc_tables.s
+	$(AS) $(ASFLAGS) -o $@ arch/x86/desc_tables.s
+
 xkernel.o: kernel/xkernel.c kernel/common.h kernel/monitor.h
 	$(CC) $(CFLAGS) -o $@ kernel/xkernel.c
 
@@ -30,3 +33,7 @@ common.o: kernel/common.h kernel/common.c
 
 monitor.o: kernel/monitor.h kernel/monitor.c kernel/common.h
 	$(CC) $(CFLAGS) -o $@ kernel/monitor.c
+
+descriptor_tables.o: kernel/descriptor_tables.h kernel/descriptor_tables.c \
+	kernel/common.h
+	$(CC) $(CFLAGS) -o $@ kernel/descriptor_tables.c
