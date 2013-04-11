@@ -1,6 +1,7 @@
 #include "common.h"
 #include "monitor.h"
 #include "descriptor_tables.h"
+#include "timer.h"
 
 /**
  * Print the test message on screen to indicate the kernel has successfully
@@ -36,8 +37,9 @@ void kmain(void) {
     }
 
     init_descriptor_tables();
+    init_timer(TIMER_DEFAULT_FREQ_HZ);
     monitor_clear();
 
     print_test_msg();
-    trigger_test_interrupts();
+    //trigger_test_interrupts();
 }

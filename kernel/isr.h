@@ -3,7 +3,7 @@
 
 #include "common.h"
 
-#define IRQ0        32
+#define IRQ0        32      // Timer
 #define IRQ1        33
 #define IRQ2        34
 #define IRQ3        35

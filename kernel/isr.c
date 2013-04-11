@@ -1,7 +1,7 @@
 #include "isr.h"
 #include "monitor.h"
 
-static isr_h interrupt_handlers[256];
+isr_h interrupt_handlers[256];
 
 void register_interrupt_handler(uint8_t isr_num, isr_h handler) {
     interrupt_handlers[isr_num] = handler;
@@ -40,10 +40,6 @@ void isr_handler(registers regs) {
 void irq_handler(registers regs) {
     PIC_send_EOI(regs.int_no);
     
-    monitor_put("Received interrupt request from PIC: ");
-    monitor_putdec(regs.int_no);
-    monitor_putchar('\n');
-
     // Now handle the IRQ.
     isr_h handler = interrupt_handlers[regs.int_no];
     if (handler != NULL) {
