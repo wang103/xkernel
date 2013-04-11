@@ -1,4 +1,4 @@
-SOURCES=loader.o desc_tables.o interrupt.o xkernel.o common.o monitor.o \
+SOURCES=loader.o desc_tables.o interrupt.o pic.o xkernel.o common.o monitor.o \
 		descriptor_tables.o isr.o
 
 CC=gcc
@@ -29,6 +29,9 @@ desc_tables.o: arch/x86/desc_tables.s
 interrupt.o: arch/x86/interrupt.s
 	$(AS) $(ASFLAGS) -o $@ arch/x86/interrupt.s
 
+pic.o: arch/x86/pic.s
+	$(AS) $(ASFLAGS) -o $@ arch/x86/pic.s
+
 xkernel.o: kernel/xkernel.c kernel/common.h kernel/monitor.h
 	$(CC) $(CFLAGS) -o $@ kernel/xkernel.c
 
@@ -39,7 +42,7 @@ monitor.o: kernel/monitor.h kernel/monitor.c kernel/common.h
 	$(CC) $(CFLAGS) -o $@ kernel/monitor.c
 
 descriptor_tables.o: kernel/descriptor_tables.h kernel/descriptor_tables.c \
-	kernel/common.h
+	kernel/common.h kernel/isr.h
 	$(CC) $(CFLAGS) -o $@ kernel/descriptor_tables.c
 
 isr.o: kernel/isr.h kernel/isr.c kernel/common.h kernel/monitor.h
