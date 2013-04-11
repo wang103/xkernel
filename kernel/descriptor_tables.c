@@ -67,12 +67,6 @@ static void gdt_set_gate(int32_t num, uint32_t base, uint32_t limit,
  * offset2: IRQ offset for the slave PIC.
  */
 static void PIC_remap(int offset1, int offset2) {
-    uint8_t a1, a2;
-
-    // Save masks.
-    a1 = inb(PIC1_DATA);
-    a2 = inb(PIC2_DATA);
-
     outb(PIC1_COMMAND, PIC_INIT);
     outb(PIC2_COMMAND, PIC_INIT);
     
@@ -88,9 +82,8 @@ static void PIC_remap(int offset1, int offset2) {
     outb(PIC1_DATA, PIC_8086);
     outb(PIC2_DATA, PIC_8086);
 
-    // Restore saved masks.
-    outb(PIC1_DATA, a1);
-    outb(PIC2_DATA, a2);
+    outb(PIC1_DATA, 0x00);
+    outb(PIC2_DATA, 0x00);
 }
 
 /**
@@ -99,6 +92,8 @@ static void PIC_remap(int offset1, int offset2) {
 static void init_idt() {
     idt_ptr.limit = (sizeof(idt_entry_struct) * 256) - 1;
     idt_ptr.base  = (uint32_t)&idt_entries;
+
+    memset((uint8_t *)idt_entries, 0, sizeof(idt_entry_struct) * 256);
 
     // CPU-used ISR.
     idt_set_gate( 0, (uint32_t)isr0 , 0x08, 0xEE);

@@ -6,24 +6,22 @@ SECTIONS
 
     .text ALIGN (0x1000) :
     {
+        code = .; _code = .; __code = .;
         *(.text)
-    }
-
-    .rodata ALIGN (0x1000) :
-    {
-        *(.rodata*)
     }
 
     .data ALIGN (0x1000) :
     {
+        data = .; _data = .; __data = .;
         *(.data)
+        *(.rodata)
     }
 
-    .bss :
+    .bss ALIGN (0x1000) :
     {
-        sbss = .;
-        *(COMMON)
+        bss = .; _bss = .; __bss = .;
         *(.bss)
-        ebss = .;
     }
+
+    end = .; _end = .; __end = .;
 }

@@ -2,6 +2,7 @@
 #include "monitor.h"
 #include "descriptor_tables.h"
 #include "timer.h"
+#include "keyboard.h"
 
 /**
  * Print the test message on screen to indicate the kernel has successfully
@@ -17,8 +18,7 @@ void print_test_msg(void) {
  */
 void trigger_test_interrupts() {
     monitor_put("\nTrigger some interrupts for testing purpose:\n");
-    asm volatile ("int $0x0");
-    asm volatile ("int $0x8");
+    asm volatile ("int $0x20");
 }
 
 /**
@@ -36,9 +36,10 @@ void kmain(void) {
         return;
     }
 
-    init_descriptor_tables();
     init_timer(TIMER_DEFAULT_FREQ_HZ);
+    init_keyboard();
     monitor_clear();
+    init_descriptor_tables();
 
     print_test_msg();
     //trigger_test_interrupts();

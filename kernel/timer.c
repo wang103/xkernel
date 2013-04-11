@@ -21,7 +21,7 @@ void init_timer(uint32_t freq) {
     register_interrupt_handler(IRQ0, &timer_callback);
 
     uint32_t divisor = CLOCK_MAX_FREQ_HZ / freq;
-
+    
     outb(PIT_COMMAND_PORT, PIT_MODE_REPEATING);
 
     // Send the divisor byte-wise.

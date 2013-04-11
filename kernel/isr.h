@@ -4,7 +4,7 @@
 #include "common.h"
 
 #define IRQ0        32      // Timer
-#define IRQ1        33
+#define IRQ1        33      // Keyboard
 #define IRQ2        34
 #define IRQ3        35
 #define IRQ4        36

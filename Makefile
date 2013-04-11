@@ -1,5 +1,5 @@
 SOURCES=loader.o desc_tables.o interrupt.o pic.o xkernel.o common.o monitor.o \
-		descriptor_tables.o isr.o timer.o
+		descriptor_tables.o isr.o timer.o keyboard.o
 
 CC=gcc
 CFLAGS=-Wall -Wextra -nostdlib -nostartfiles -nodefaultlibs -nostdinc \
@@ -50,3 +50,6 @@ isr.o: kernel/isr.h kernel/isr.c kernel/common.h kernel/monitor.h
 
 timer.o: kernel/timer.h kernel/timer.c kernel/isr.h kernel/monitor.h
 	$(CC) $(CFLAGS) -o $@ kernel/timer.c
+
+keyboard.o: kernel/keyboard.h kernel/keyboard.c kernel/monitor.h
+	$(CC) $(CFLAGS) -o $@ kernel/keyboard.c

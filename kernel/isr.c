@@ -40,6 +40,8 @@ void isr_handler(registers regs) {
 void irq_handler(registers regs) {
     PIC_send_EOI(regs.int_no);
     
+    monitor_put("IRQ triggered\n");
+
     // Now handle the IRQ.
     isr_h handler = interrupt_handlers[regs.int_no];
     if (handler != NULL) {
