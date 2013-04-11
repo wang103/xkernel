@@ -60,12 +60,59 @@ static void gdt_set_gate(int32_t num, uint32_t base, uint32_t limit,
 }
 
 /**
+ * Send the EOI command to the PIC chip.
+ */
+static void PIC_send_EOI(uint8_t irq) {
+    if (irq >= 8) {
+        // Send EOI to the slave PIC.
+        outb(PIC2_COMMAND, PIC_EOI);
+    }
+
+    // Send EOI to the master PIC.
+    outb(PIC1_COMMAND, PIC_EOI);
+}
+
+/**
+ * Reinitialize/remap the PIC master/slave IRQs.
+ *
+ * offset1: IRQ offset for the master PIC.
+ * offset2: IRQ offset for the slave PIC.
+ */
+static void PIC_remap(int offset1, int offset2) {
+    uint8_t a1, a2;
+
+    // Save masks.
+    a1 = inb(PIC1_DATA);
+    a2 = inb(PIC2_DATA);
+
+    outb(PIC1_COMMAND, PIC_INIT);
+    outb(PIC2_COMMAND, PIC_INIT);
+    
+    // Vector offsets.
+    outb(PIC1_DATA, offset1);
+    outb(PIC2_DATA, offset2);
+
+    // How master and slave are wired.
+    outb(PIC1_DATA, 4);
+    outb(PIC2_DATA, 2);
+
+    // Additional info about the environment.
+    outb(PIC1_DATA, PIC_8086);
+    outb(PIC2_DATA, PIC_8086);
+
+    // Restore saved masks.'
+    outb(PIC1_DATA, a1);
+    outb(PIC2_DATA, a2);
+}
+
+/**
  * Initialize the IDT.
  */
 static void init_idt() {
     idt_ptr.limit = (sizeof(idt_entry_struct) * 256) - 1;
     idt_ptr.base  = (uint32_t)&idt_entries;
 
+    // CPU-used ISR.
     idt_set_gate( 0, (uint32_t)isr0 , 0x08, 0xEE);
     idt_set_gate( 1, (uint32_t)isr1 , 0x08, 0xEE);
     idt_set_gate( 2, (uint32_t)isr2 , 0x08, 0xEE);
@@ -98,6 +145,9 @@ static void init_idt() {
     idt_set_gate(29, (uint32_t)isr29, 0x08, 0xEE);
     idt_set_gate(30, (uint32_t)isr30, 0x08, 0xEE);
     idt_set_gate(31, (uint32_t)isr31, 0x08, 0xEE);
+
+    // Remap the 16 IRQ to isr32 ~ 47.
+    PIC_remap(0x20, 0x28);
 
     idt_flush((uint32_t)&idt_ptr);
 }

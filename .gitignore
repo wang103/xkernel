@@ -1,6 +1,9 @@
 # Final output
 xkernel
 
+# Vim swap files.
+*.swp
+
 # Object files
 *.o
 

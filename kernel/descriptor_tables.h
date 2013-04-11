@@ -74,4 +74,15 @@ extern void isr29();
 extern void isr30();
 extern void isr31();
 
+#define PIC1            0x20    // IO base addr for master PIC
+#define PIC2            0xA0    // IO base addr for slave PIC
+#define PIC1_COMMAND    PIC1
+#define PIC1_DATA       (PIC1 + 1)
+#define PIC2_COMMAND    PIC2
+#define PIC2_DATA       (PIC2 + 1)
+
+#define PIC_EOI         0x20    // End of interrupt command code
+#define PIC_INIT        0x11    // Initialization code
+#define PIC_8086        0x01    // 8086/88 (MCS-80/85) mode
+
 #endif
