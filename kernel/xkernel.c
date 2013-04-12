@@ -5,10 +5,10 @@
 #include "keyboard.h"
 
 /**
- * Print the test message on screen to indicate the kernel has successfully
+ * Print the welcome message on screen to indicate the kernel has successfully
  * loaded and run.
  */
-void print_test_msg(void) {
+void print_welcome_msg(void) {
     monitor_put("Welcome to xkernel\n");
     monitor_put("This project is currently being developed by Tianyi Wang.\n");
 }
@@ -36,11 +36,16 @@ void kmain(void) {
         return;
     }
 
+    init_descriptor_tables();
     init_timer(TIMER_DEFAULT_FREQ_HZ);
     init_keyboard();
     monitor_clear();
-    init_descriptor_tables();
 
-    print_test_msg();
+    print_welcome_msg();
+    enable_interrupts();
+
     //trigger_test_interrupts();
+    
+    // Don't ever exit the kernel.
+    for (; ;);
 }

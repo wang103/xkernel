@@ -6,11 +6,6 @@ uint32_t tick = 0;
 
 static void timer_callback(registers regs) {
     tick++;
-    monitor_put("Tick from interrupt ");
-    monitor_putdec(regs.int_no);
-    monitor_put(": ");
-    monitor_putdec(tick);
-    monitor_putchar('\n');
 }
 
 /**

@@ -17,4 +17,7 @@ uint32_t inl(uint16_t port);
 
 void memset(uint8_t *dest, uint8_t val, uint32_t len);
 
+void enable_interrupts();
+void disable_interrupts();
+
 #endif

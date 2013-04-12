@@ -93,8 +93,6 @@ static void init_idt() {
     idt_ptr.limit = (sizeof(idt_entry_struct) * 256) - 1;
     idt_ptr.base  = (uint32_t)&idt_entries;
 
-    memset((uint8_t *)idt_entries, 0, sizeof(idt_entry_struct) * 256);
-
     // CPU-used ISR.
     idt_set_gate( 0, (uint32_t)isr0 , 0x08, 0xEE);
     idt_set_gate( 1, (uint32_t)isr1 , 0x08, 0xEE);

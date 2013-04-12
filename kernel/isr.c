@@ -35,22 +35,39 @@ static void IRQ_clear_mask(uint8_t IRQline) {
 
 void register_interrupt_handler(uint8_t isr_num, isr_h handler) {
     interrupt_handlers[isr_num] = handler;
-    if (isr_num >= IRQ0) {
-        IRQ_clear_mask(isr_num - IRQ0);
-    }
+    IRQ_clear_mask(isr_num - IRQ0);
+}
+
+void unregister_interrupt_handler(uint8_t isr_num) {
+    interrupt_handlers[isr_num] = NULL;
+    IRQ_set_mask(isr_num - IRQ0);
 }
 
 /**
  * Send the EOI command to the PIC chip.
  */
 static void PIC_send_EOI(uint8_t irq) {
-    if (irq >= PIC_BASE_IO_SLAVE) {
+    if (irq >= PIC_BASE_IO_SLAVE && irq <= 47) {
         // Send EOI to the slave PIC.
         outb(PIC2_COMMAND, PIC_EOI);
     }
 
     // Send EOI to the master PIC.
     outb(PIC1_COMMAND, PIC_EOI);
+}
+
+/**
+ * Return 0 if the interrupt is correctly handled.
+ */
+static int handle_interrupt(registers regs) {
+    isr_h handler = interrupt_handlers[regs.int_no];
+    if (handler != NULL) {
+        handler(regs);
+        return 0;
+    } else {
+        monitor_put("No supported handler for this interrupt");
+        return 1;
+    }
 }
 
 void isr_handler(registers regs) {
@@ -61,24 +78,22 @@ void isr_handler(registers regs) {
     monitor_putdec(regs.err_code);
     monitor_putchar('\n');
 
-    // Interrupts generated externally by INT instruction will not have the
-    // error code pushed onto the stack, this will mess up the stack, so for
-    // the interrupts that have error codes, this ISR handler will just halt
-    // instead of return.
-    if (regs.int_no == 8 || (regs.int_no >= 10 && regs.int_no <=14)) {
-        for (;;);
+    // Now handle the interrupt.
+    int result = handle_interrupt(regs);
+
+    if (result) {
+        monitor_put("Interrupt unhandled, going into infinite loop.\n");
+        for (; ;);
     }
 }
 
 void irq_handler(registers regs) {
-    monitor_put("IRQ triggered\n");
-
     // Now handle the IRQ.
-    isr_h handler = interrupt_handlers[regs.int_no];
-    if (handler != NULL) {
-        handler(regs);
-    } else {
-        monitor_put("No supported handler for this IRQ");
+    int result = handle_interrupt(regs);
+
+    if (result) {
+        monitor_put("Interrupt unhandled, going into infinite loop.\n");
+        for (; ;);
     }
 
     PIC_send_EOI(regs.int_no);
