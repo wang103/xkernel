@@ -35,19 +35,25 @@ static void IRQ_clear_mask(uint8_t IRQline) {
 
 void register_interrupt_handler(uint8_t isr_num, isr_h handler) {
     interrupt_handlers[isr_num] = handler;
-    IRQ_clear_mask(isr_num - IRQ0);
+    
+    if (isr_num >= IRQ0 && isr_num <= IRQ15) {
+        IRQ_clear_mask(isr_num - IRQ0);
+    }
 }
 
 void unregister_interrupt_handler(uint8_t isr_num) {
     interrupt_handlers[isr_num] = NULL;
-    IRQ_set_mask(isr_num - IRQ0);
+
+    if (isr_num >= IRQ0 && isr_num <= IRQ15) {
+        IRQ_set_mask(isr_num - IRQ0);
+    }
 }
 
 /**
  * Send the EOI command to the PIC chip.
  */
 static void PIC_send_EOI(uint8_t irq) {
-    if (irq >= PIC_BASE_IO_SLAVE && irq <= 47) {
+    if (irq >= PIC_BASE_IO_SLAVE && irq <= IRQ15) {
         // Send EOI to the slave PIC.
         outb(PIC2_COMMAND, PIC_EOI);
     }
