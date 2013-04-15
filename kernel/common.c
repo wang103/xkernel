@@ -1,4 +1,23 @@
 #include "common.h"
+#include "monitor.h"
+
+/**
+ * Raise a kernel panic.
+ */
+void panic(const char *msg, const char *file, uint32_t line) {
+    asm volatile("cli");
+
+    monitor_put("KERNEL PANIC(");
+    monitor_put(msg);
+    monitor_put(") at ");
+    monitor_put(file);
+    monitor_put(":");
+    monitor_putdec(line);
+    monitor_putchar('\n');
+
+    // Going into infinite loop.
+    for(; ;);
+}
 
 /**
  * Write a byte out to the specified port.

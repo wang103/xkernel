@@ -10,6 +10,10 @@ typedef          short  int16_t;
 typedef unsigned char   uint8_t;
 typedef          char   int8_t;
 
+#define PANIC(msg)  panic(msg, __FILE__, __LINE__);
+
+void panic(const char *msg, const char *file, uint32_t line);
+
 void outb(uint16_t port, uint8_t value);
 uint8_t inb(uint16_t port);
 uint16_t inw(uint16_t port);

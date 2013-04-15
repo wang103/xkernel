@@ -35,7 +35,7 @@ pic.o: arch/x86/pic.s
 xkernel.o: kernel/xkernel.c kernel/common.h kernel/monitor.h
 	$(CC) $(CFLAGS) -o $@ kernel/xkernel.c
 
-common.o: kernel/common.h kernel/common.c
+common.o: kernel/common.h kernel/common.c kernel/monitor.h
 	$(CC) $(CFLAGS) -o $@ kernel/common.c
 
 monitor.o: kernel/monitor.h kernel/monitor.c kernel/common.h
@@ -54,7 +54,7 @@ timer.o: kernel/timer.h kernel/timer.c kernel/isr.h kernel/monitor.h
 keyboard.o: kernel/keyboard.h kernel/keyboard.c kernel/monitor.h
 	$(CC) $(CFLAGS) -o $@ kernel/keyboard.c
 
-mm.o: kernel/mm.h kernel/mm.c kernel/common.h
+mm.o: kernel/mm.h kernel/mm.c kernel/common.h kernel/page.h
 	$(CC) $(CFLAGS) -o $@ kernel/mm.c
 
 page.o: kernel/page.h kernel/page.c kernel/common.h kernel/isr.h

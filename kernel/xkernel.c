@@ -45,7 +45,8 @@ void kmain(void) {
     enable_interrupts();
 
     //trigger_test_interrupts();
-    
+    //PANIC("TESTING");
+
     // Don't ever exit the kernel.
     for (; ;);
 }
