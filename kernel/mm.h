@@ -4,12 +4,15 @@
 #include "common.h"
 #include "page.h"
 
-#define MM_4K           0x1000
-#define MM_ALIGN_4K     0xFFFFF000
+#define PHYS_MEM_SIZE_BYTE      0x20000000      // 512 MB
+
+#define MM_4K                   0x1000
+#define MM_ALIGN_4K             0xFFFFF000
 
 #define BYTE_INDEX_FROM_BIT(a)  (a / 32)
 #define BIT_OFFSET_FROM_BIT(a)  (a % 32)
 
+void init_mm();
 void alloc_frame(page *page, int is_kernel, int is_writable);
 void free_frame(page *page);
 

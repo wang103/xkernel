@@ -7,6 +7,16 @@ uint32_t placement_address = (uint32_t)&end;    // For heap allocation
 uint32_t *frames_bitmap;
 uint32_t frames_num;        // Total number of frames
 
+void init_mm() {
+    frames_num = PHYS_MEM_SIZE_BYTE / MM_4K;
+    frames_bitmap = (uint32_t *)kmalloc_early(frames_num / 8, 0, NULL);
+
+    // Clear the bitmap.
+    memset((uint8_t *)frames_bitmap, 0, frames_num / 8);
+
+    initialize_paging();
+}
+
 /**
  * Set a bit in the frame bitmap.
  */
@@ -32,6 +42,7 @@ static void clear_frame(uint32_t frame_addr) {
 /**
  * Test if a bit is set in the frame bitmap.
  */
+/*Not need
 static uint32_t test_frame(uint32_t frame_addr) {
     uint32_t frame = frame_addr / MM_4K;
     uint32_t index = BYTE_INDEX_FROM_BIT(frame);
@@ -39,6 +50,7 @@ static uint32_t test_frame(uint32_t frame_addr) {
 
     return frames_bitmap[index] & (0x1 << offset);
 }
+*/
 
 /**
  * Find the first available frame.

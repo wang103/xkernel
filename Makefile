@@ -32,7 +32,7 @@ interrupt.o: arch/x86/interrupt.s
 pic.o: arch/x86/pic.s
 	$(AS) $(ASFLAGS) -o $@ arch/x86/pic.s
 
-xkernel.o: kernel/xkernel.c kernel/common.h kernel/monitor.h
+xkernel.o: kernel/xkernel.c kernel/common.h kernel/monitor.h kernel/mm.h
 	$(CC) $(CFLAGS) -o $@ kernel/xkernel.c
 
 common.o: kernel/common.h kernel/common.c kernel/monitor.h
@@ -57,5 +57,6 @@ keyboard.o: kernel/keyboard.h kernel/keyboard.c kernel/monitor.h
 mm.o: kernel/mm.h kernel/mm.c kernel/common.h kernel/page.h
 	$(CC) $(CFLAGS) -o $@ kernel/mm.c
 
-page.o: kernel/page.h kernel/page.c kernel/common.h kernel/isr.h
+page.o: kernel/page.h kernel/page.c kernel/common.h kernel/isr.h kernel/mm.h \
+	kernel/monitor.h
 	$(CC) $(CFLAGS) -o $@ kernel/page.c

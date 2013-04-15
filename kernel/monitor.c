@@ -105,6 +105,29 @@ void monitor_putdec(uint32_t i) {
 }
 
 /**
+ * Write a hex-decimal number on the screen.
+ */
+void monitor_puthex(uint32_t i) {
+    if (i == 0) {
+        monitor_putchar('0');
+        return;
+    }
+
+    uint32_t leftover = i / 16;
+    uint32_t digit = i - leftover * 16;
+
+    if (leftover != 0) {
+        monitor_puthex(leftover);
+    }
+
+    if (digit <= 9) {
+        monitor_putchar('0' + digit);
+    } else {
+        monitor_putchar('A' + digit - 10);
+    }
+}
+
+/**
  * Write a string of characters on the screen.
  */
 void monitor_put(char *c) {

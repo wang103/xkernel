@@ -7,6 +7,8 @@
 #define PAGE_TABLE_ENTRIES      1024
 #define PAGE_DIRECTORY_ENTRIES  1024
 
+#define ENABLE_PAGING_BIT       0x80000000
+
 /**
  * Represent a page descriptor.
  */
@@ -51,7 +53,5 @@ void initialize_paging();
 void switch_page_directory(page_directory *dir);
 
 page *get_page(uint32_t addr, int make, page_directory *dir);
-
-void page_fault_hander(registers regs);
 
 #endif

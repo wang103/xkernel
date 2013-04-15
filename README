@@ -6,6 +6,7 @@ Email:  wang103@illinois.edu
 
 Description:
 This kernel is in ELF format.
+For now it assumes the size of physical memory is at least 512MB.
 
 
 Source Tree:

@@ -3,12 +3,13 @@
 #include "descriptor_tables.h"
 #include "timer.h"
 #include "keyboard.h"
+#include "mm.h"
 
 /**
  * Print the welcome message on screen to indicate the kernel has successfully
  * loaded and run.
  */
-void print_welcome_msg(void) {
+static void print_welcome_msg(void) {
     monitor_put("Welcome to xkernel\n");
     monitor_put("This project is currently being developed by Tianyi Wang.\n");
 }
@@ -16,9 +17,17 @@ void print_welcome_msg(void) {
 /**
  * Trigger some interrupts to make sure ISRs are working correctly.
  */
-void trigger_test_interrupts() {
+void test_interrupts() {
     monitor_put("\nTrigger some interrupts for testing purpose:\n");
     asm volatile ("int $0x20");
+}
+
+/**
+ * Trigger some page fault to make sure it's handled correctly.
+ */
+void test_paging() {
+    uint32_t *ptr = (uint32_t *)0xA0000000;
+    *ptr = 0;
 }
 
 /**
@@ -37,6 +46,7 @@ void kmain(void) {
     }
 
     init_descriptor_tables();
+    init_mm();
     init_timer(TIMER_DEFAULT_FREQ_HZ);
     init_keyboard();
     monitor_clear();
@@ -44,8 +54,8 @@ void kmain(void) {
     print_welcome_msg();
     enable_interrupts();
 
-    //trigger_test_interrupts();
-    //PANIC("TESTING");
+    //test_interrupts();
+    test_paging();
 
     // Don't ever exit the kernel.
     for (; ;);

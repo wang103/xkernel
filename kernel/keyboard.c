@@ -5,10 +5,17 @@
 static void keyboard_callback(registers regs) {
     uint8_t scan_code;
 
-    monitor_put("Key pressed\n");
+    if (regs.err_code) {
+        PANIC("KEYBOARD");
+    }
+
+    monitor_put("Key pressed: ");
     
     // Read the keyboard's data buffer.
     scan_code = inb(KEYBOARD_BUFFER_PORT);
+    
+    monitor_putdec(scan_code);
+    monitor_putchar('\n');
 }
 
 void init_keyboard() {

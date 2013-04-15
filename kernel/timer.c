@@ -5,6 +5,10 @@
 uint32_t tick = 0;
 
 static void timer_callback(registers regs) {
+    if (regs.err_code) {
+        PANIC("TIMER");
+    }
+
     tick++;
 }
 
