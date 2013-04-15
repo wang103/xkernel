@@ -4,12 +4,12 @@
 #include "common.h"
 #include "page.h"
 
-#define PHYS_MEM_SIZE_BYTE      0x20000000      // 512 MB
+#define PHYS_MEM_SIZE_BYTE      0x20000000      // Assume to be 512 MB for now
 
 #define MM_4K                   0x1000
 #define MM_ALIGN_4K             0xFFFFF000
 
-#define BYTE_INDEX_FROM_BIT(a)  (a / 32)
+#define INT_INDEX_FROM_BIT(a)   (a / 32)
 #define BIT_OFFSET_FROM_BIT(a)  (a % 32)
 
 void init_mm();

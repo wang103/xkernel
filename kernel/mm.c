@@ -22,7 +22,7 @@ void init_mm() {
  */
 static void set_frame(uint32_t frame_addr) {
     uint32_t frame = frame_addr / MM_4K;
-    uint32_t index = BYTE_INDEX_FROM_BIT(frame);
+    uint32_t index = INT_INDEX_FROM_BIT(frame);
     uint32_t offset = BIT_OFFSET_FROM_BIT(frame);
 
     frames_bitmap[index] |= (0x1 << offset);
@@ -33,7 +33,7 @@ static void set_frame(uint32_t frame_addr) {
  */
 static void clear_frame(uint32_t frame_addr) {
     uint32_t frame = frame_addr / MM_4K;
-    uint32_t index = BYTE_INDEX_FROM_BIT(frame);
+    uint32_t index = INT_INDEX_FROM_BIT(frame);
     uint32_t offset = BIT_OFFSET_FROM_BIT(frame);
 
     frames_bitmap[index] &= ~(0x1 << offset);
@@ -45,7 +45,7 @@ static void clear_frame(uint32_t frame_addr) {
 /*Not need
 static uint32_t test_frame(uint32_t frame_addr) {
     uint32_t frame = frame_addr / MM_4K;
-    uint32_t index = BYTE_INDEX_FROM_BIT(frame);
+    uint32_t index = INT_INDEX_FROM_BIT(frame);
     uint32_t offset = BIT_OFFSET_FROM_BIT(frame);
 
     return frames_bitmap[index] & (0x1 << offset);
@@ -58,7 +58,7 @@ static uint32_t test_frame(uint32_t frame_addr) {
  */
 static uint32_t get_first_free_frame() {
     uint32_t i, j;
-    for (i = 0; i < BYTE_INDEX_FROM_BIT(frames_num); i++) {
+    for (i = 0; i < INT_INDEX_FROM_BIT(frames_num); i++) {
         if (frames_bitmap[i] != 0xFFFFFFFF) {
             // At least one bit is free here.
             for (j = 0; j < 32; j++) {
@@ -76,14 +76,14 @@ static uint32_t get_first_free_frame() {
  */
 void alloc_frame(page *page, int is_kernel, int is_writable) {
     if (page->frame != 0) {
-        // Frame was already allocated, just return.
+        // Frame was already allocated for this page, just return.
         return;
     }
 
     uint32_t index = get_first_free_frame();
     if (index == (uint32_t)-1) {
-        // No more available frame, just return.
-        return;
+        // No more available frame, kernel panic.
+        PANIC("No more frame");
     }
 
     set_frame(index * MM_4K);       // Mark the frame as allocated
@@ -101,7 +101,7 @@ void alloc_frame(page *page, int is_kernel, int is_writable) {
 void free_frame(page *page) {
     uint32_t frame = page->frame;
     if (!frame) {
-        // The given page doesn't have a frame allocated.
+        // The given page doesn't have a frame allocated for it.
         return;
     }
 
@@ -119,6 +119,7 @@ void free_frame(page *page) {
  */
 uint32_t kmalloc_early(uint32_t size, int align, uint32_t *phys) {
     if (align && (placement_address & MM_ALIGN_4K)) {
+        // Align it if it's not already.
         placement_address &= MM_ALIGN_4K;
         placement_address += MM_4K;
     }

@@ -4,6 +4,7 @@
 #include "common.h"
 #include "isr.h"
 
+// 1024 * 1024 = 2^20, just enough entries for 4GB RAM.
 #define PAGE_TABLE_ENTRIES      1024
 #define PAGE_DIRECTORY_ENTRIES  1024
 

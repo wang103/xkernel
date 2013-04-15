@@ -58,13 +58,17 @@ static void page_fault_handler(registers regs) {
 }
 
 /**
- * Enable paging.
+ * Enable paging. After this function is called, all memory access will be
+ * virtual memory.
  */
 void initialize_paging() {
-    // First make a page directory.
+    uint32_t phys_addr;
+
+    // First make a page directory for the kernel.
     kernel_directory = (page_directory *)kmalloc_early(sizeof(page_directory),
-            1, NULL);
+            1, &phys_addr);
     memset((uint8_t *)kernel_directory, 0, sizeof(page_directory));
+    kernel_directory->page_directory_phys_addr = phys_addr;
     current_directory = kernel_directory;
 
     // Identity mapping! This is needed so kernel can continue to run after
@@ -74,7 +78,7 @@ void initialize_paging() {
     uint32_t i = 0;
     while (i < placement_address) {
         page *p = get_page(i, 1, kernel_directory);
-        alloc_frame(p, 1, 0);
+        alloc_frame(p, 1, 1);
 
         // Next page/frame.
         i += MM_4K;
@@ -126,9 +130,8 @@ page *get_page(uint32_t addr, int make, page_directory *dir) {
         memset((uint8_t *)(dir->page_tables[table_index]), 0,
                 sizeof(page_table));
 
-        // Physical address is aligned to 4K , the last 3 bits are used to tell
-        // CPU the table is present, RW, and user accessable.
-        dir->page_table_phys_addrs[table_index] = phys_addr | 0x7;
+        // Set the directory entry to be kernel-only, writable, and present.
+        dir->page_table_phys_addrs[table_index] = phys_addr | 0x3;
 
         return &(dir->page_tables[table_index]->pages[page_index]);
     }
