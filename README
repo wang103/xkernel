@@ -33,3 +33,9 @@ In one console, do 'make test_qemu' to start qemu, which
 will wait for a gdb connection. In another console, do
 'make test_gdb', then type 'target remote localhost:1234'
 to start debugging.
+
+
+Credits:
+This project borrows code from the following sources:
+(1) Linus Torvalds' Linux Kernel
+(2) JamesM's Kernel Development Tutorials

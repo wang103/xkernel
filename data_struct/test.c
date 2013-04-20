@@ -3,6 +3,7 @@
  */
 
 #include "linked_list.h"
+#include "queue.h"
 #include <assert.h>
 #include <stddef.h>
 
@@ -11,11 +12,7 @@ typedef struct _os {
     struct list_head list;
 } os;
 
-int main() {
-    /******************************************
-     *          Test the linked list          *
-     ******************************************/
-
+void test_linked_list() {
     // Declare a list head.
     LIST_HEAD(os_list);
 
@@ -48,6 +45,16 @@ int main() {
 
     free(new_os_2);
     free(new_os_1);
+}
+
+void test_queue() {
+
+}
+
+int main() {
+    test_linked_list();
+    
+    test_queue();
 
     printf("All tests successfully passed!\n");
 
