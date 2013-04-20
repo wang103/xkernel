@@ -12,6 +12,8 @@ typedef          char   int8_t;
 
 #define PANIC(msg)  panic(msg, __FILE__, __LINE__);
 
+#define offsetof(TYPE, MEMBER) ((uint32_t) &((TYPE *)0)->MEMBER)
+
 #define container_of(ptr, type, member) ({                      \
         const typeof( ((type *)0)->member ) *__mptr = (ptr);    \
         (type *)( (char *)__mptr - offsetof(type, member) );})

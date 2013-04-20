@@ -30,7 +30,8 @@ static inline void INIT_LIST_HEAD(struct list_head *list) {
  * @type:       the type of the struct this is embedded in.
  * @member:     the name of the list_struct within the struct.
  */
-#define list_entry(ptr, type, member) container_of(ptr, type, member)
+#define list_entry(ptr, type, member) \
+    container_of(ptr, type, member)
 
 /**
  * list_add - add a new entry.
@@ -175,5 +176,24 @@ static inline void list_splice_tail_init(struct list_head *list,
         INIT_LIST_HEAD(list);
     }
 }
+
+/**
+ * list_for_each - iterate over a list.
+ * @pos:    the &struct list_head to use a loop cursor.
+ * @head:   the head of the list.
+ */
+#define list_for_each(pos, head) \
+    for (pos = (head)->next; pos != (head); pos = pos->next)
+
+/**
+ * list_for_each_entry - iterate over list of give type.
+ * @pos:    the type * to use as a loop cursor.
+ * @head:   the head of the list.
+ * @member: the name of the list_struct within the struct.
+ */
+#define list_for_each_entry(pos, head, member)                      \
+    for (pos = list_entry((head)->next, typeof(*pos), member);      \
+         &pos->member != (head);                                    \
+         pos = list_entry(pos->member.next, typeof(*pos), member))
 
 #endif

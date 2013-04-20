@@ -4,6 +4,7 @@
 
 #include "linked_list.h"
 #include <assert.h>
+#include <stddef.h>
 
 typedef struct _os {
     int os_number;
@@ -31,6 +32,13 @@ int main() {
     list_add_tail(&new_os_2->list, &os_list);
 
     assert(list_empty(&os_list) == 0);
+
+    struct _os *cur_os;
+    int counter = 0;
+    list_for_each_entry(cur_os, &os_list, list) {
+        assert(cur_os->os_number == counter);
+        counter++;
+    }
 
     // Remove the added nodes.
     list_del(&new_os_1->list);
