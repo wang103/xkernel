@@ -11,10 +11,10 @@ For now it assumes the size of physical memory is at least
 
 
 Source Tree:
-arch/:      Architecture-specific source
-data/:      Built-in data structures
-kernel/:    Core subsystems
-scripts/:   Various scripts used for building stuffs
+arch/:          Architecture-specific source
+data_struct/:   Built-in data structures
+kernel/:        Core subsystems
+scripts/:       Various scripts used for building stuffs
 
 
 To Compile:
