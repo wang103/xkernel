@@ -1,5 +1,5 @@
 SOURCES=loader.o desc_tables.o interrupt.o pic.o xkernel.o common.o monitor.o \
-		descriptor_tables.o isr.o timer.o keyboard.o mm.o page.o linked_list.o
+		descriptor_tables.o isr.o timer.o keyboard.o mm.o page.o
 
 CC=gcc
 CFLAGS=-Wall -Wextra -nostdlib -nostartfiles -nodefaultlibs -nostdinc \
@@ -66,6 +66,3 @@ mm.o: kernel/mm.h kernel/mm.c kernel/common.h kernel/page.h
 page.o: kernel/page.h kernel/page.c kernel/common.h kernel/isr.h kernel/mm.h \
 	kernel/monitor.h
 	$(CC) $(CFLAGS) -o $@ kernel/page.c
-
-linked_list.o: data/linked_list.h data/linked_list.c kernel/common.h
-	$(CC) $(CFLAGS) -o $@ data/linked_list.c
