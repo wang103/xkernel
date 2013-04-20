@@ -6,7 +6,8 @@ Email:  wang103@illinois.edu
 
 Description:
 This kernel is in ELF format.
-For now it assumes the size of physical memory is at least 512MB.
+For now it assumes the size of physical memory is at least
+512MB.
 
 
 Source Tree:
@@ -16,11 +17,17 @@ scripts/:   Various scripts used for building stuffs
 
 
 To Compile:
-Simply type 'make' to compile the kernel sources. This
-will output the binary kernel 'xkernel' in ELF format.
+Simply type 'make' to compile the kernel sources. This will
+output the binary kernel 'xkernel' in ELF format.
 
 
 To Run:
-The kernel can be loaded using GRUB, and run using
-emulator. If you have qemu installed, you can start the
-kernel by 'make run'.
+The kernel can be loaded using GRUB, and run using emulator.
+If you have qemu installed, you can start the kernel by
+'make run'.
+
+
+To Debug:
+In one console, do 'make test_qemu' to start qemu, which
+will wait for a gdb connection. In another console, do
+'make test_gdb' to start debugging.

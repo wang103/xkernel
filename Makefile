@@ -3,7 +3,7 @@ SOURCES=loader.o desc_tables.o interrupt.o pic.o xkernel.o common.o monitor.o \
 
 CC=gcc
 CFLAGS=-Wall -Wextra -nostdlib -nostartfiles -nodefaultlibs -nostdinc \
-	   -fno-builtin -fno-stack-protector -m32 -c
+	   -fno-builtin -fno-stack-protector -m32 -c -g
 LD=ld
 LDFLAGS=-T scripts/linker.ld -melf_i386
 AS=nasm
@@ -16,6 +16,12 @@ clean:
 
 run:
 	qemu-system-i386 -kernel xkernel
+
+test_qemu:
+	qemu-system-i386 -s -S -kernel xkernel
+
+test_gdb:
+	gdb xkernel
 
 xkernel: $(SOURCES) scripts/linker.ld
 	$(LD) $(LDFLAGS) -o $@ $(SOURCES)

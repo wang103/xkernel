@@ -55,7 +55,7 @@ void kmain(void) {
     enable_interrupts();
 
     //test_interrupts();
-    test_paging();
+    //test_paging();
 
     // Don't ever exit the kernel.
     for (; ;);
