@@ -48,7 +48,7 @@ static inline void list_add(struct list_head *new, struct list_head *head) {
 }
 
 /**
- * list_add_tail - add a nwe entry.
+ * list_add_tail - add a new entry.
  * @new:    new entry to be added.
  * @head:   list head to add it before.
  *
@@ -60,6 +60,29 @@ static inline void list_add_tail(struct list_head *new, struct list_head *head) 
     new->next = head;
     new->prev = head_prev;
     head_prev->next = new;
+}
+
+/**
+ * list_del - delete entry from list.
+ * @entry:  the entry to delete from the list.
+ */
+static inline void list_del(struct list_head *entry) {
+    struct list_head *prev = entry->prev;
+    struct list_head *next = entry->next;
+
+    prev->next = next;
+    next->prev = prev;
+
+    entry->prev = NULL;
+    entry->next = NULL;
+}
+
+/**
+ * list_empty - test whether or not a list is empty.
+ * @head:   the list to test.
+ */
+static inline int list_empty(const struct list_head *head) {
+    return head->next == head;
 }
 
 #endif
