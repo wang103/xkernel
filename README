@@ -12,6 +12,7 @@ For now it assumes the size of physical memory is at least
 
 Source Tree:
 arch/:      Architecture-specific source
+data/:      Built-in data structures
 kernel/:    Core subsystems
 scripts/:   Various scripts used for building stuffs
 
@@ -30,4 +31,5 @@ If you have qemu installed, you can start the kernel by
 To Debug:
 In one console, do 'make test_qemu' to start qemu, which
 will wait for a gdb connection. In another console, do
-'make test_gdb' to start debugging.
+'make test_gdb', then type 'target remote localhost:1234'
+to start debugging.

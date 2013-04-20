@@ -12,6 +12,10 @@ typedef          char   int8_t;
 
 #define PANIC(msg)  panic(msg, __FILE__, __LINE__);
 
+#define container_of(ptr, type, member) ({                      \
+        const typeof( ((type *)0)->member ) *__mptr = (ptr);    \
+        (type *)( (char *)__mptr - offsetof(type, member) );})
+
 void panic(const char *msg, const char *file, uint32_t line);
 
 void outb(uint16_t port, uint8_t value);
