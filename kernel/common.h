@@ -30,4 +30,8 @@ void memset(uint8_t *dest, uint8_t val, uint32_t len);
 void enable_interrupts();
 void disable_interrupts();
 
+static inline int is_power_of_2(unsigned int n) {
+    return (n != 0 && ((n & (n - 1)) == 0));
+}
+
 #endif

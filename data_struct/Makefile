@@ -9,5 +9,5 @@ clean:
 run:
 	./test
 
-test: test.c ../kernel/common.h linked_list.h queue.h
-	$(CC) $(CFLAGS) -o test test.c
+test: ../kernel/common.h test.c linked_list.h queue.h queue.c
+	$(CC) $(CFLAGS) -o $@ test.c
