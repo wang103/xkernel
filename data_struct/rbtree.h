@@ -41,11 +41,16 @@ struct rb_root {
 
 #define RB_EMPTY_ROOT(root) ((root)->rb_node == NULL)
 
+/**
+ * Add node as child of parent. *rb_link will be set to node.
+ */
 static inline void rb_link_node(struct rb_node *node, struct rb_node *parent,
         struct rb_node **rb_link) {
     node->parent = parent;
     node->rb_left = NULL;
     node->rb_right = NULL;
+
+    node->is_red = 1;
 
     *rb_link = node;
 }
@@ -55,7 +60,7 @@ struct rb_node *maximum(struct rb_node *);
 struct rb_node *predecessor(struct rb_node *);
 struct rb_node *successor(struct rb_node *);
 
-void rb_insert(struct rb_node *, struct rb_root *);
-void rb_erase(struct rb_node *, struct rb_root *);
+void rb_insert_fixup(struct rb_node *, struct rb_root *);
+void rb_erase_fixup(struct rb_node *, struct rb_root *);
 
 #endif
