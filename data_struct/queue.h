@@ -14,11 +14,11 @@ struct queue {
     void            *data;
 };
 
-int queue_alloc(struct queue *que, unsigned int size, unsigned int esize);
+int queue_alloc(struct queue *queue, unsigned int size, unsigned int esize);
 
-void queue_free(struct queue *que);
+void queue_free(struct queue *queue);
 
-int queue_init(struct queue *que, void *buffer, unsigned int size,
+int queue_init(struct queue *queue, void *buffer, unsigned int size,
         unsigned int esize);
 
 /**

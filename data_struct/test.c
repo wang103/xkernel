@@ -2,10 +2,11 @@
  * Test all the data structures.
  */
 
-#include "linked_list.h"
-#include "queue.h"
 #include <assert.h>
 #include <stddef.h>
+#include "linked_list.h"
+#include "queue.h"
+#include "rbtree.h"
 
 typedef struct _os {
     int os_number;
@@ -51,10 +52,16 @@ void test_queue() {
 
 }
 
+void test_rbtree() {
+    struct rb_root root = RB_ROOT;
+}
+
 int main() {
     test_linked_list();
     
     test_queue();
+
+    test_rbtree();
 
     printf("All tests successfully passed!\n");
 
