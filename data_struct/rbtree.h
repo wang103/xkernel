@@ -47,8 +47,8 @@ struct rb_root {
 static inline void rb_link_node(struct rb_node *node, struct rb_node *parent,
         struct rb_node **rb_link) {
     node->parent = parent;
-    node->rb_left = NULL;
-    node->rb_right = NULL;
+    node->left = NULL;
+    node->right = NULL;
 
     node->is_red = 1;
 

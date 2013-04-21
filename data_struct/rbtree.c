@@ -18,7 +18,7 @@ struct rb_node *predecessor(struct rb_node *node) {
     if (node->left != NULL) {
         return maximum(node->left);
     }
-    rb_node *parent = node->parent;
+    struct rb_node *parent = node->parent;
     while (parent != NULL && node == parent->left) {
         node = parent;
         parent = node->parent;
@@ -30,7 +30,7 @@ struct rb_node *successor(struct rb_node *node) {
     if (node->right != NULL) {
         return minimum(node->right);
     }
-    rb_node *parent = node->parent;
+    struct rb_node *parent = node->parent;
     while (parent != NULL && node == parent->right) {
         node = parent;
         parent = node->parent;
@@ -41,8 +41,8 @@ struct rb_node *successor(struct rb_node *node) {
 /**
  * Assume the right child of node is not NULL.
  */
-static void left_rotate(rb_node *node, struct rb_root *root) {
-    rb_node *y = node->right;
+static void left_rotate(struct rb_node *node, struct rb_root *root) {
+    struct rb_node *y = node->right;
 
     node->right = y->left;
     if (y->left != NULL) {
@@ -52,7 +52,7 @@ static void left_rotate(rb_node *node, struct rb_root *root) {
     y->parent = node->parent;
 
     if (node->parent == NULL) {
-        root->rb_node = node;
+        root->rb_node = y;
     } else {
         if (node == node->parent->left) {
             node->parent->left = y;
@@ -68,8 +68,8 @@ static void left_rotate(rb_node *node, struct rb_root *root) {
 /**
  * Assume the left child of node is not NULL.
  */
-static void right_rotate(rb_node *node, rb_root *root) {
-    rb_node *x = node->left;
+static void right_rotate(struct rb_node *node, struct rb_root *root) {
+    struct rb_node *x = node->left;
 
     node->left = x->right;
     if (x->right != NULL) {
@@ -79,7 +79,7 @@ static void right_rotate(rb_node *node, rb_root *root) {
     x->parent = node->parent;
 
     if (node->parent == NULL) {
-        root->rb_node = node;
+        root->rb_node = x;
     } else {
         if (node == node->parent->left) {
             node->parent->left = x;
@@ -103,7 +103,7 @@ void rb_insert_fixup(struct rb_node *node, struct rb_root *root) {
 
         if (node->parent == node->parent->parent->left) {
             struct rb_node *uncle = node->parent->parent->right;
-            if (uncle->is_red) {
+            if (uncle != NULL && uncle->is_red) {
                 // Uncle node is also red, just need to swap color.
                 node->parent->is_red = 0;
                 uncle->is_red = 0;
@@ -113,15 +113,15 @@ void rb_insert_fixup(struct rb_node *node, struct rb_root *root) {
                 // Uncle node is black, needs rotation.
                 if (node == node->parent->right) {
                     node = node->parent;
-                    left_rotate(node);
+                    left_rotate(node, root);
                 }
                 node->parent->is_red = 0;
                 node->parent->parent->is_red = 1;
-                right_rotate(node->parent->parent);
+                right_rotate(node->parent->parent, root);
             }
         } else {
             struct rb_node *uncle = node->parent->parent->left;
-            if (uncle->is_red) {
+            if (uncle != NULL && uncle->is_red) {
                 // Uncle node is also red, just need to swap color.
                 node->parent->is_red = 0;
                 uncle->is_red = 0;
@@ -131,11 +131,11 @@ void rb_insert_fixup(struct rb_node *node, struct rb_root *root) {
                 // Uncle node is black, needs rotation.
                 if (node == node->parent->left) {
                     node = node->parent;
-                    right_rotate(node);
+                    right_rotate(node, root);
                 }
                 node->parent->is_red = 0;
                 node->parent->parent->is_red = 1;
-                left_rotate(node->parent->parent);
+                left_rotate(node->parent->parent, root);
             }
         }
     }

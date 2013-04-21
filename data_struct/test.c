@@ -52,8 +52,55 @@ void test_queue() {
 
 }
 
+typedef struct _character {
+    int char_number;
+    struct rb_node node;
+} character;
+
 void test_rbtree() {
     struct rb_root root = RB_ROOT;
+
+    assert(RB_EMPTY_ROOT(&root) == 1);
+
+    // Add a new node to the tree.
+    character *new_char_1 = (character *)malloc(sizeof(character));
+    new_char_1->char_number = 1;
+    rb_link_node(&(new_char_1->node), root.rb_node, &(root.rb_node));
+    rb_insert_fixup(&new_char_1->node, &root);
+
+    assert(RB_EMPTY_ROOT(&root) == 0);
+
+    // Add one more node to the tree.
+    character *new_char_2 = (character *)malloc(sizeof(character));
+    new_char_2->char_number = 2;
+    rb_link_node(&(new_char_2->node), root.rb_node, &(root.rb_node->right));
+    rb_insert_fixup(&new_char_2->node, &root);
+
+    assert(RB_EMPTY_ROOT(&root) == 0);
+
+    // Add one more node to the tree.
+    character *new_char_3 = (character *)malloc(sizeof(character));
+    new_char_3->char_number = 3;
+    rb_link_node(&(new_char_3->node), &(new_char_2->node), &(new_char_2->node.right));
+    rb_insert_fixup(&new_char_3->node, &root);
+
+    assert(RB_EMPTY_ROOT(&root) == 0);
+
+    character *cur_char;
+    cur_char = rb_entry(root.rb_node, character, node);
+    assert(cur_char->char_number == 2);
+    cur_char = rb_entry(root.rb_node->left, character, node);
+    assert(cur_char->char_number == 1);
+    cur_char = rb_entry(root.rb_node->right, character, node);
+    assert(cur_char->char_number == 3);
+
+    // Remove the added nodes.
+
+    //assert(list_empty(&os_list) == 1);
+
+    free(new_char_3);
+    free(new_char_2);
+    free(new_char_1);
 }
 
 int main() {
