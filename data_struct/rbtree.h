@@ -61,6 +61,6 @@ struct rb_node *predecessor(struct rb_node *);
 struct rb_node *successor(struct rb_node *);
 
 void rb_insert_fixup(struct rb_node *, struct rb_root *);
-void rb_erase_fixup(struct rb_node *, struct rb_root *);
+void rb_erase(struct rb_node *, struct rb_root *);
 
 #endif

@@ -95,8 +95,23 @@ void test_rbtree() {
     assert(cur_char->char_number == 3);
 
     // Remove the added nodes.
+    rb_erase(&new_char_2->node, &root);
+    cur_char = rb_entry(root.rb_node, character, node);
+    assert(cur_char->char_number == 3);
+    cur_char = rb_entry(root.rb_node->left, character, node);
+    assert(cur_char->char_number == 1);
+    assert(root.rb_node->right == NULL);
 
-    //assert(list_empty(&os_list) == 1);
+    rb_erase(&new_char_3->node, &root);
+    cur_char = rb_entry(root.rb_node, character, node);
+    assert(cur_char->char_number == 1);
+    assert(root.rb_node->left == NULL);
+    assert(root.rb_node->right == NULL);
+
+    rb_erase(&new_char_1->node, &root);
+    assert(root.rb_node == NULL);
+
+    assert(RB_EMPTY_ROOT(&root) == 1);
 
     free(new_char_3);
     free(new_char_2);
