@@ -63,8 +63,8 @@ void kmain(void) {
         return;
     }
 
-    init_mm(phys_mem_size);
     init_descriptor_tables();
+    init_mm(phys_mem_size);
     init_timer(TIMER_DEFAULT_FREQ_HZ);
     init_keyboard();
     monitor_clear();
