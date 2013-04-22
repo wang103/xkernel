@@ -12,6 +12,9 @@
 #define INT_INDEX_FROM_BIT(a)   (a / 32)
 #define BIT_OFFSET_FROM_BIT(a)  (a % 32)
 
+// Defined in mm.s. Takes a 24 byte buffer address as input.
+extern void get_phys_mem_size(uint32_t);
+
 void init_mm();
 void alloc_frame(page *page, int is_kernel, int is_writable);
 void free_frame(page *page);

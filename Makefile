@@ -1,5 +1,5 @@
-SOURCES=loader.o desc_tables.o interrupt.o pic.o xkernel.o common.o monitor.o \
-		descriptor_tables.o isr.o timer.o keyboard.o mm.o page.o
+SOURCES=loader.o desc_tables.o interrupt.o pic.o mm_as.o xkernel.o common.o \
+		monitor.o descriptor_tables.o isr.o timer.o keyboard.o mm.o page.o
 
 CC=gcc
 CFLAGS=-Wall -Wextra -nostdlib -nostartfiles -nodefaultlibs -nostdinc \
@@ -37,6 +37,9 @@ interrupt.o: arch/x86/interrupt.s
 
 pic.o: arch/x86/pic.s
 	$(AS) $(ASFLAGS) -o $@ arch/x86/pic.s
+
+mm_as.o: arch/x86/mm.s
+	$(AS) $(ASFLAGS) -o $@ arch/x86/mm.s
 
 xkernel.o: kernel/xkernel.c kernel/common.h kernel/monitor.h kernel/mm.h
 	$(CC) $(CFLAGS) -o $@ kernel/xkernel.c

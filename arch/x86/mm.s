@@ -1,14 +1,16 @@
-; Use the INT 0x15, eax=0xE820 BIOS function to get a memory map.
-; Sets the carry flag (CF) to 1 if failed.
-; inputs:
-;   @es:di -> destination buffer of 24 bytes.
-; outputs:
-;   @bp -> entry count, trashes all registers except esi.
+; Use the INT 0x15, eax=0xE820 BIOS function to get physical memory size.
+; inputs:   destination buffer of 24 bytes.
+; outputs:  physical memory size, or -1 if failed.
+[GLOBAL get_phys_mem_size]
 
-do_e820:
+get_phys_mem_size:
+    mov eax, [esp + 4]          ; get the pointer to the buffer
+    mov [es:di], eax
+
     xor ebx, ebx                ; ebx must be 0 to start
-    xor bp, bp                  ; keep an entry count in bp
+    xor ebp, ebp                ; store memory size in ebp
     mov edx, 0x534D4150         ; place "SMAP" into edx
+    
     mov eax, 0xE820
     mov [es:di + 20], dword 1   ; to make map compatible with ACPI
     mov ecx, 24                 ; ask for 24 bytes
@@ -20,41 +22,42 @@ do_e820:
     mov edx, 0x534D4150         ; replacing in case it's trashed
     cmp eax, edx                ; should be same on success
     jne short .failed
+
     test ebx, ebx               ; ebx must be non-zero
     je short .failed
-    jmp short .jmpin
 
-.e820lp:
+    ; success
+
+    mov ecx, [es:di + 8]        ; get length
+    add ebp, ecx
+
+.repeat:
     mov eax, 0xE820
-    mov [es:di + 20], dword 1
-    mov ecx, 24
+    mov [es:di + 20], dword 1   ; to make map compatible with ACPI
+    mov ecx, 24                 ; ask for 24 bytes
+    
     int 0x15
-    jc short .e820f             ; carry set means "end of list reached"
-    mov edx, 0x534D4150
 
-.jmpin:
-    jcxz .skipent
-    cmp cl, 20                  ; got a 24 byte ACPI 3.X response?
-    jbe short .notext
-    test byte [es:di + 20], 1   ; if so, is the "ignore this entry" bit set?
-    je short .skipent
+    jc short .done              ; carry set means it's over
 
-.notext:
-    mov ecx, [es:di + 8]        ; get lower dword of memory region length
-    or ecx, [es:di + 12]        ; or it with upper dword to test for zero
-    jz .skipent                 ; if length qword is 0, skip entry
-    inc bp                      ; got a good entry
-    add di, 24                  ; move to next storage spot 
+    ; success
+    
+    mov edx, 0x534D4150         ; replacing in case it's trashed
+    
+    mov ecx, [es:di + 8]        ; get length
+    add ebp, ecx
 
-.skipent:
-    test ebx, ebx               ; if ebx resets to 0, list is complete
-    jne short .e820lp
+    test ebx, ebx               ; if ebx is zero, it's the end
+    je short .done
 
-.e820f:
-    mov [mmap_ent], bp          ; store the entry count 
-    clc                         ; clear the carry
+    jmp short .repeat
+
+.done:
+    stc
+    mov eax, ebp
     ret
 
 .failed:
     stc                         ; "function unsupported" error exit
+    mov eax, -1                 ; -1 is the error code
     ret
