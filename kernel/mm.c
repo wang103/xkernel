@@ -7,8 +7,12 @@ uint32_t placement_address = (uint32_t)&end;    // For heap allocation
 uint32_t *frames_bitmap;
 uint32_t frames_num;        // Total number of frames
 
-void init_mm() {
-    frames_num = PHYS_MEM_SIZE_BYTE / MM_4K;
+/**
+ * init_mem - initialize memory related things.
+ * @phys_mem_size: physical memory size in byte.
+ */
+void init_mm(uint32_t phys_mem_size) {
+    frames_num = phys_mem_size / MM_4K;
     frames_bitmap = (uint32_t *)kmalloc_early(frames_num / 8, 0, NULL);
 
     // Clear the bitmap.

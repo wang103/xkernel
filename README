@@ -5,14 +5,13 @@ Email:  wang103@illinois.edu
 
 
 Description:
-This kernel is in ELF format.
-For now it assumes the size of physical memory is at least
-512MB.
+This kernel is 32bit, in ELF format.
 
 
 Source Tree:
 arch/:          Architecture-specific source
 data_struct/:   Built-in data structures
+include:/       Kernel headers
 kernel/:        Core subsystems
 scripts/:       Various scripts used for building stuffs
 

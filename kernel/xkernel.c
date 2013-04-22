@@ -1,3 +1,4 @@
+#include "../include/multiboot.h"
 #include "common.h"
 #include "monitor.h"
 #include "descriptor_tables.h"
@@ -30,6 +31,17 @@ void test_paging() {
     *ptr = 0;
 }
 
+typedef struct multiboot_memory_map {
+    unsigned int size;
+    unsigned int base_addr_low, base_addr_high;
+    unsigned int length_low, length_high;
+    unsigned int type;
+} multiboot_memory_map_t;
+
+static unsigned int get_phys_mem_size(multiboot_info_t *mbt) {
+    return mbt->mem_upper * MM_1K + 1048576 /* 1MB */;
+}
+
 /**
  * The starting function of the kernel.
  */
@@ -37,7 +49,7 @@ void kmain(void) {
 
     extern uint32_t magic;
     // Uncomment the following if access to multiboot header is needed.
-    //extern void *mbd;
+    extern void *mbd;
 
     if (magic != 0x2BADB002) {
         // Something went wrong according to specs.
@@ -45,8 +57,14 @@ void kmain(void) {
         return;
     }
 
+    unsigned int phys_mem_size = get_phys_mem_size(mbd);
+    if (phys_mem_size <= 0) {
+        // RAM fail. Return to halt.
+        return;
+    }
+
+    init_mm(phys_mem_size);
     init_descriptor_tables();
-    init_mm();
     init_timer(TIMER_DEFAULT_FREQ_HZ);
     init_keyboard();
     monitor_clear();

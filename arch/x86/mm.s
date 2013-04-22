@@ -1,10 +1,16 @@
 ; Use the INT 0x15, eax=0xE820 BIOS function to get physical memory size.
 ; inputs:   destination buffer of 24 bytes.
-; outputs:  physical memory size, or -1 if failed.
-[GLOBAL get_phys_mem_size]
+; outputs:  physical memory size, or 0 if failed.
+;
+; Need to run in bootloader environment, real mode.
 
 get_phys_mem_size:
     mov eax, [esp + 4]          ; get the pointer to the buffer
+
+    ; save registers that will get trashed
+    push ebp
+    push ebx
+
     mov [es:di], eax
 
     xor ebx, ebx                ; ebx must be 0 to start
@@ -16,7 +22,6 @@ get_phys_mem_size:
     mov ecx, 24                 ; ask for 24 bytes
     
     int 0x15
-
     jc short .failed            ; carry set on first call means 
                                 ; "unsupported function"
     mov edx, 0x534D4150         ; replacing in case it's trashed
@@ -55,9 +60,17 @@ get_phys_mem_size:
 .done:
     stc
     mov eax, ebp
+
+    pop ebx
+    pop ebp
+
     ret
 
 .failed:
     stc                         ; "function unsupported" error exit
-    mov eax, -1                 ; -1 is the error code
+    mov eax, 0                  ; 0 is the error code
+    
+    pop ebx
+    pop ebp
+    
     ret
