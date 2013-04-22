@@ -1,5 +1,5 @@
 SOURCES=loader.o desc_tables.o interrupt.o pic.o xkernel.o common.o monitor.o \
-		descriptor_tables.o isr.o timer.o keyboard.o mm.o page.o
+		descriptor_tables.o isr.o timer.o keyboard.o mm.o page.o kheap.o
 
 CC=gcc
 CFLAGS=-Wall -Wextra -nostdlib -nostartfiles -nodefaultlibs -nostdinc \
@@ -67,3 +67,6 @@ mm.o: kernel/mm.h kernel/mm.c kernel/common.h kernel/page.h
 page.o: kernel/page.h kernel/page.c kernel/common.h kernel/isr.h kernel/mm.h \
 	kernel/monitor.h
 	$(CC) $(CFLAGS) -o $@ kernel/page.c
+
+kheap.o: kernel/kheap.h kernel/kheap.c kernel/common.h
+	$(CC) $(CFLAGS) -o $@ kernel/kheap.c
