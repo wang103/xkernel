@@ -5,10 +5,10 @@
 extern uint32_t placement_address;
 
 // Kernel's page directory.
-static page_directory *kernel_directory = NULL;
+page_directory *kernel_directory = NULL;
 
 // Current page directory.
-static page_directory *current_directory = NULL;
+page_directory *current_directory = NULL;
 
 /**
  * Handle the page fault exception.

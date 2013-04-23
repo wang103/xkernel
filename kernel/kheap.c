@@ -1,6 +1,12 @@
 #include "kheap.h"
 #include "mm.h"
 
+extern page_directory *kernel_directory;
+
+struct rb_root mem_root;
+uint32_t kheap_cur_end = 0;     // 0 as initial value indicates the
+                                // heap is not initialized yet.
+
 static void insert_node_into_rbtree(struct rb_node *new_node) {
     struct rb_node **p = &mem_root.rb_node;
     struct rb_node *parent = NULL;
@@ -69,8 +75,7 @@ static mem_node *find_available_node(uint32_t size) {
 
             i += PAGE_SIZE;
         }
-        void *temp_mem = kheap_cur_end;
-        node = (mem_node *)temp_mem;
+        node = (mem_node *)kheap_cur_end;
         kheap_cur_end = new_bound;
 
         node->size = size;
@@ -89,7 +94,7 @@ void init_kheap() {
     kheap_cur_end = KHEAP_START;
 }
 
-void *alloc(uint32_t size) {
+void *alloc(uint32_t size, int align) {
     mem_node *node = find_available_node(size);
     node->in_use = 1;
 

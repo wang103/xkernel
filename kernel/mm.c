@@ -1,7 +1,10 @@
 #include "mm.h"
+#include "kheap.h"
 
 extern uint32_t end;        // Defined in the linker script, start of heap
 uint32_t placement_address = (uint32_t)&end;    // For heap allocation
+extern uint32_t kheap_cur_end;
+extern page_directory *kernel_directory;
 
 // Bitmap for frames - used or free.
 uint32_t *frames_bitmap;
@@ -122,17 +125,31 @@ void free_frame(page *page) {
  * 'phys' is not NULL, the physical address will be stored in 'phys'.
  */
 uint32_t kmalloc_early(uint32_t size, int align, uint32_t *phys) {
-    if (align && (placement_address & MM_ALIGN_4K)) {
-        // Align it if it's not already.
-        placement_address &= MM_ALIGN_4K;
-        placement_address += MM_4K;
+    uint32_t addr;
+
+    if (kheap_cur_end != 0) {
+        // Heap has been established, and placement_address has been froze.
+        addr = (uint32_t)alloc(size, align);
+
+        if (phys) {
+            page *pg = get_page(addr, 1, kernel_directory);
+            *phys = (pg->frame << 12) + (addr & 0xFFF);
+        }
+    }
+    else {
+        if (align && (placement_address & MM_ALIGN_4K)) {
+            // Align it if it's not already.
+            placement_address &= MM_ALIGN_4K;
+            placement_address += MM_4K;
+        }
+
+        if (phys) {
+            *phys = placement_address;
+        }
+
+        addr = placement_address;
+        placement_address += size;
     }
 
-    if (phys) {
-        *phys = placement_address;
-    }
-
-    uint32_t tmp = placement_address;
-    placement_address += size;
-    return tmp;
+    return addr;
 }
