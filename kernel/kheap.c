@@ -8,7 +8,7 @@ static void insert_node_into_rbtree(struct rb_node *new_node) {
     while (*p) {
         parent = *p;
 
-        if ((uint32_t)new_node < (uint32_t)(*p)) {
+        if ((uint32_t)(&new_node) < (uint32_t)p) {
             p = &(*p)->left;
         } else {
             p = &(*p)->right;
@@ -45,6 +45,7 @@ static mem_node *_find_available_node(struct rb_node *node, uint32_t size) {
         return cur_mem_node;
     }
 
+    // Recursive cases:
     mem_node *temp = _find_available_node(node->left, size);
     if (temp != NULL) {
         return temp;
@@ -58,9 +59,20 @@ static mem_node *find_available_node(uint32_t size) {
     mem_node *node = _find_available_node(mem_root.rb_node, size);
 
     if (node == NULL) {
-        void *temp_mem = (void *)kmalloc_early(sizeof(mem_node) + size,
-                0, NULL);
+        // Need to expand the boundary of heap for more memory.
+        uint32_t i = kheap_cur_end;
+        uint32_t new_bound = kheap_cur_end + size + sizeof(mem_node);
+
+        while (i < new_bound) {
+            page *pg = get_page(i, 1, kernel_directory);
+            alloc_frame(pg, 1, 1);
+
+            i += PAGE_SIZE;
+        }
+        void *temp_mem = kheap_cur_end;
         node = (mem_node *)temp_mem;
+        kheap_cur_end = new_bound;
+
         node->size = size;
 
         // Insert the new node into the rb tree.
@@ -74,9 +86,10 @@ static mem_node *find_available_node(uint32_t size) {
 
 void init_kheap() {
     mem_root = RB_ROOT;
+    kheap_cur_end = KHEAP_START;
 }
 
-void *kmalloc(uint32_t size) {
+void *alloc(uint32_t size) {
     mem_node *node = find_available_node(size);
     node->in_use = 1;
 
@@ -84,5 +97,5 @@ void *kmalloc(uint32_t size) {
 }
 
 void free(void *addr) {
-
+    //TODO: implementation.
 }

@@ -1,3 +1,8 @@
+/**
+ * Dynamic kernel memory allocation.
+ * Assume paging has been enabled.
+ */
+
 #ifndef KHEAP_H
 #define KHEAP_H
 
@@ -19,9 +24,13 @@ typedef struct _mem_node {
 } mem_node;
 
 static struct rb_root mem_root;
+static uint32_t kheap_cur_end;
+
+#define KHEAP_START     0xC0000000      // Place the kernel-heap at 3G, this
+                                        // gives user-space about 3G
 
 void init_kheap();
-void *kmalloc(uint32_t size);
+void *alloc(uint32_t size);
 void free(void *addr);
 
 #endif

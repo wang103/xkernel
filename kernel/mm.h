@@ -8,6 +8,8 @@
 #define MM_4K                   0x1000
 #define MM_ALIGN_4K             0xFFFFF000
 
+#define PAGE_SIZE               MM_4K
+
 #define INT_INDEX_FROM_BIT(a)   (a / 32)
 #define BIT_OFFSET_FROM_BIT(a)  (a % 32)
 

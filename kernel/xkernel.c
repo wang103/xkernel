@@ -5,6 +5,7 @@
 #include "timer.h"
 #include "keyboard.h"
 #include "mm.h"
+#include "kheap.h"
 
 /**
  * Print the welcome message on screen to indicate the kernel has successfully
@@ -65,6 +66,7 @@ void kmain(void) {
 
     init_descriptor_tables();
     init_mm(phys_mem_size);
+    init_kheap();
     init_timer(TIMER_DEFAULT_FREQ_HZ);
     init_keyboard();
     monitor_clear();

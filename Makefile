@@ -40,7 +40,7 @@ pic.o: arch/x86/pic.s
 	$(AS) $(ASFLAGS) -o $@ arch/x86/pic.s
 
 xkernel.o: include/multiboot.h kernel/xkernel.c kernel/common.h \
-	kernel/monitor.h kernel/mm.h
+	kernel/monitor.h kernel/mm.h kernel/kheap.h
 	$(CC) $(CFLAGS) -o $@ kernel/xkernel.c
 
 common.o: kernel/common.h kernel/common.c kernel/monitor.h
@@ -72,5 +72,5 @@ page.o: kernel/page.h kernel/page.c kernel/common.h kernel/isr.h kernel/mm.h \
 rbtree.o: data_struct/rbtree.h data_struct/rbtree.c kernel/common.h
 	$(CC) $(CFLAGS) -o $@ data_struct/rbtree.c
 
-kheap.o: kernel/kheap.h kernel/kheap.c kernel/common.h
+kheap.o: data_struct/rbtree.h kernel/kheap.h kernel/kheap.c kernel/common.h
 	$(CC) $(CFLAGS) -o $@ kernel/kheap.c
