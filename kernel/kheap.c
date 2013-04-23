@@ -1,6 +1,24 @@
 #include "kheap.h"
 #include "mm.h"
 
+static void insert_node_into_rbtree(struct rb_node *new_node) {
+    struct rb_node **p = &mem_root.rb_node;
+    struct rb_node *parent = NULL;
+
+    while (*p) {
+        parent = *p;
+
+        if ((uint32_t)new_node < (uint32_t)(*p)) {
+            p = &(*p)->left;
+        } else {
+            p = &(*p)->right;
+        }
+    }
+
+    rb_link_node(new_node, parent, p);
+    rb_insert_fixup(new_node, &mem_root);
+}
+
 static void split_node(mem_node *node, uint32_t needed_size) {
     if (node->size > needed_size + sizeof(mem_node)) {
         mem_node *new_node = (mem_node *)(((char *)node) + sizeof(mem_node)
@@ -12,21 +30,7 @@ static void split_node(mem_node *node, uint32_t needed_size) {
         node->size = needed_size;
 
         // Insert the new node into the rb tree.
-        struct rb_node **p = &mem_root.rb_node;
-        struct rb_node *parent = NULL;
-
-        while (*p) {
-            parent = *p;
-
-            if ((uint32_t)(&new_node->node) < (uint32_t)(*p)) {
-                p = &(*p)->left;
-            } else {
-                p = &(*p)->right;
-            }
-        }
-
-        rb_link_node(&new_node->node, parent, p);
-        rb_insert_fixup(&new_node->node, &mem_root);
+        insert_node_into_rbtree(&new_node->node);
     }
 }
 
@@ -58,6 +62,9 @@ static mem_node *find_available_node(uint32_t size) {
                 0, NULL);
         node = (mem_node *)temp_mem;
         node->size = size;
+
+        // Insert the new node into the rb tree.
+        insert_node_into_rbtree(&node->node);
     }
 
     split_node(node, size);
