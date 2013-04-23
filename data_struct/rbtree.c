@@ -190,7 +190,7 @@ static void rb_erase_fixup(struct rb_node *node, struct rb_node *parent,
                 sibling->right->is_red = 0;
                 left_rotate(parent, root);
 
-                node = root;
+                node = root->rb_node;
                 continue;
             }
         } else {
@@ -230,7 +230,7 @@ static void rb_erase_fixup(struct rb_node *node, struct rb_node *parent,
                 sibling->left->is_red = 0;
                 right_rotate(parent, root);
 
-                node = root;
+                node = root->rb_node;
                 continue;
             }
         }

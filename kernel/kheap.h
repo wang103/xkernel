@@ -4,8 +4,14 @@
 #include "common.h"
 #include "../data_struct/rbtree.h"
 
+/**
+ * |==========|===========|
+ * | mem_node | allocated | ... ...
+ * | struct   | memory    | ... ...
+ * |==========|===========|
+ */
+
 typedef struct _mem_node {
-    uint32_t mem_addr;
     uint32_t size;
     uint8_t in_use;
 
