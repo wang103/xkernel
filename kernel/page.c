@@ -65,8 +65,8 @@ void initialize_paging() {
     uint32_t phys_addr;
 
     // First make a page directory for the kernel.
-    kernel_directory = (page_directory *)kmalloc_early(sizeof(page_directory),
-            1, &phys_addr);
+    kernel_directory = (page_directory *)kmalloc(sizeof(page_directory), 1,
+            &phys_addr);
     memset((uint8_t *)kernel_directory, 0, sizeof(page_directory));
     kernel_directory->page_directory_phys_addr = phys_addr;
     current_directory = kernel_directory;
@@ -123,7 +123,7 @@ page *get_page(uint32_t addr, int make, page_directory *dir) {
     }
     else if (make) {
         uint32_t phys_addr;
-        dir->page_tables[table_index] = (page_table *)kmalloc_early(
+        dir->page_tables[table_index] = (page_table *)kmalloc(
                 sizeof(page_table), 1, &phys_addr);
 
         // Initialize the table.

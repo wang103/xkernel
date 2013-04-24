@@ -125,6 +125,9 @@ static mem_node *find_available_node(uint32_t size, int align) {
             uint32_t offset = PAGE_SIZE - new_node_end % PAGE_SIZE;
             
             struct rb_node *last_rb_node = maximum(mem_root.rb_node);
+            if (last_rb_node == NULL) {
+                // TODO: handle this case.
+            }
             mem_node *last_mem_node = rb_entry(last_rb_node, mem_node, node);
             
             last_mem_node->size += offset;

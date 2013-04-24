@@ -16,7 +16,7 @@ uint32_t frames_num;        // Total number of frames
  */
 void init_mm(uint32_t phys_mem_size) {
     frames_num = phys_mem_size / MM_4K;
-    frames_bitmap = (uint32_t *)kmalloc_early(frames_num / 8, 0, NULL);
+    frames_bitmap = (uint32_t *)kmalloc(frames_num / 8, 0, NULL);
 
     // Clear the bitmap.
     memset((uint8_t *)frames_bitmap, 0, frames_num / 8);
@@ -118,13 +118,14 @@ void free_frame(page *page) {
 }
 
 /**
- * Allocate memory in the early stage of the kernel -- before the heap is
- * active. Memory allocated here won't be freed.
+ * During early stage of the kernel, when heap is not active yet, this function
+ * allocates memory by increasing a counter. Memory allocated this way won't be
+ * freed.
  *
  * Upon return, the memory address will be page-align if 'align' is 1. And if
  * 'phys' is not NULL, the physical address will be stored in 'phys'.
  */
-uint32_t kmalloc_early(uint32_t size, int align, uint32_t *phys) {
+uint32_t kmalloc(uint32_t size, int align, uint32_t *phys) {
     uint32_t addr;
 
     if (kheap_cur_end != 0) {

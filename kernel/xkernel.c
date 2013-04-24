@@ -32,6 +32,17 @@ void test_paging() {
     *ptr = 0;
 }
 
+void test_heap() {
+    uint32_t phys_mem_addr;
+    uint32_t vir_mem_addr = kmalloc(4096, 0, &phys_mem_addr);
+
+    monitor_put("Physical memory at 0x");
+    monitor_puthex(phys_mem_addr);
+    monitor_put(", virtual memory at 0x");
+    monitor_puthex(vir_mem_addr);
+    monitor_put("\n");
+}
+
 typedef struct multiboot_memory_map {
     unsigned int size;
     unsigned int base_addr_low, base_addr_high;
@@ -76,6 +87,7 @@ void kmain(void) {
 
     //test_interrupts();
     //test_paging();
+    test_heap();
 
     // Don't ever exit the kernel.
     for (; ;);

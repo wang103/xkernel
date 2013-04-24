@@ -17,6 +17,6 @@ void init_mm(uint32_t phys_mem_size);
 void alloc_frame(page *page, int is_kernel, int is_writable);
 void free_frame(page *page);
 
-uint32_t kmalloc_early(uint32_t size, int align, uint32_t *phys);
+uint32_t kmalloc(uint32_t size, int align, uint32_t *phys);
 
 #endif

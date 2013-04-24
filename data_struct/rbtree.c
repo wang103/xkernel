@@ -1,6 +1,10 @@
 #include "rbtree.h"
 
 struct rb_node *minimum(struct rb_node *node) {
+    if (node == NULL) {
+        return NULL;
+    }
+    
     while (node->left != NULL) {
         node = node->left;
     }
@@ -8,6 +12,10 @@ struct rb_node *minimum(struct rb_node *node) {
 }
 
 struct rb_node *maximum(struct rb_node *node) {
+    if (node == NULL) {
+        return NULL;
+    }
+
     while (node->right != NULL) {
         node = node->right;
     }
