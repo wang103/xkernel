@@ -93,7 +93,7 @@ void test_heap() {
     kfree((void *)v5);
     kfree((void *)v2);
 
-    monitor_put("Heap tests passed!");
+    monitor_put("Heap tests passed!\n");
 }
 
 typedef struct multiboot_memory_map {
@@ -140,7 +140,7 @@ void kmain(void) {
 
     //test_interrupts();
     //test_paging();
-    test_heap();
+    //test_heap();
 
     // Don't ever exit the kernel.
     for (; ;);

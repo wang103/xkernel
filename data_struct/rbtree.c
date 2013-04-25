@@ -309,10 +309,12 @@ void rb_erase(struct rb_node *node, struct rb_root *root) {
         }
 
         spliced_out_node->is_red = node->is_red;
-        
-        node->parent = NULL;
-        node->left = NULL;
-        node->right = NULL;
+
+        // If the parent is being replaced now, we need to change the parent
+        // for the child node.
+        if (temp_parent == node) {
+            temp_parent = spliced_out_node;
+        }
     }
 
     // Rebalance the tree if needed.
