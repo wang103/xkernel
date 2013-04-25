@@ -4,6 +4,7 @@
 extern uint32_t end;        // Defined in the linker script, start of heap
 uint32_t placement_address = (uint32_t)&end;    // For heap allocation
 extern uint32_t kheap_cur_end;
+extern uint32_t kheap_end;
 extern page_directory *kernel_directory;
 
 // Bitmap for frames - used or free.
@@ -15,6 +16,8 @@ uint32_t frames_num;        // Total number of frames
  * @phys_mem_size: physical memory size in byte.
  */
 void init_mm(uint32_t phys_mem_size) {
+    kheap_end = KHEAP_START + phys_mem_size / 8;
+
     frames_num = phys_mem_size / MM_4K;
     frames_bitmap = (uint32_t *)kmalloc(frames_num / 8, 0, NULL);
 
@@ -138,7 +141,7 @@ uint32_t kmalloc(uint32_t size, int align, uint32_t *phys) {
         }
     }
     else {
-        if (align && (placement_address & MM_ALIGN_4K)) {
+        if (align && (placement_address & (~MM_ALIGN_4K))) {
             // Align it if it's not already.
             placement_address &= MM_ALIGN_4K;
             placement_address += MM_4K;

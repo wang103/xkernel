@@ -1,7 +1,9 @@
 #include "page.h"
 #include "mm.h"
 #include "monitor.h"
+#include "kheap.h"
 
+extern uint32_t kheap_end;
 extern uint32_t placement_address;
 
 // Kernel's page directory.
@@ -71,11 +73,21 @@ void initialize_paging() {
     kernel_directory->page_directory_phys_addr = phys_addr;
     current_directory = kernel_directory;
 
+    // Allocate memory for page table for the heap, but no need to allocate
+    // frames now.
+    uint32_t i = KHEAP_START;
+    while (i < kheap_end) {
+        get_page(i, 1, kernel_directory);
+
+        // Next page/frame.
+        i += MM_4K;
+    }
+
     // Identity mapping! This is needed so kernel can continue to run after
     // paging is enabled.
     // We need the mapping between frames already used by kmalloc and pages.
     // Note that placement_address in changing during the loop.
-    uint32_t i = 0;
+    i = 0;
     while (i < placement_address) {
         page *p = get_page(i, 1, kernel_directory);
         alloc_frame(p, 1, 1);

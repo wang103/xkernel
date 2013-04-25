@@ -32,15 +32,59 @@ void test_paging() {
     *ptr = 0;
 }
 
-void test_heap() {
+uint32_t _test_heap(uint32_t size, int align) {
     uint32_t phys_mem_addr;
-    uint32_t vir_mem_addr = kmalloc(4096, 0, &phys_mem_addr);
+    uint32_t vir_mem_addr = kmalloc(size, align, &phys_mem_addr);
 
     monitor_put("Physical memory at 0x");
     monitor_puthex(phys_mem_addr);
     monitor_put(", virtual memory at 0x");
     monitor_puthex(vir_mem_addr);
+    monitor_put(", size=");
+    monitor_putdec(size);
+    monitor_put(", align=");
+    monitor_putdec(align);
     monitor_put("\n");
+
+    return vir_mem_addr;
+}
+
+void test_heap() {
+    uint32_t overhead = sizeof(mem_node);
+
+    uint32_t v0 = _test_heap(4096, 0);
+    
+    uint32_t v1 = _test_heap(4096, 0);
+    if (v0 + 4096 + overhead != v1) {
+        PANIC("test_heap: 1");
+    }
+
+    uint32_t v2 = _test_heap(4096, 0);
+    if (v1 + 4096 + overhead != v2) {
+        PANIC("test_heap: 2");
+    }
+
+    uint32_t v3 = _test_heap(4, 0);
+    if (v2 + 4096 + overhead != v3) {
+        PANIC("test_heap: 3");
+    }
+
+    uint32_t v4 = _test_heap(1024, 1);
+    if (v4 < v3 || v4 & (~MM_ALIGN_4K)) {
+        PANIC("test_heap: 4");
+    }
+
+    uint32_t v5 = _test_heap(2048, 1);
+    if (v5 < v4 || v5 & (~MM_ALIGN_4K)) {
+        PANIC("test_heap: 5");
+    }
+
+    uint32_t v6 = _test_heap(3072, 0);
+    if (v6 > v4 || !(v6 & (~MM_ALIGN_4K))) {
+        PANIC("test_heap: 6");
+    }
+
+    monitor_put("Heap tests passed!");
 }
 
 typedef struct multiboot_memory_map {

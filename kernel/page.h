@@ -50,9 +50,7 @@ typedef struct _page_directory {
 } page_directory;
 
 void initialize_paging();
-
 void switch_page_directory(page_directory *dir);
-
 page *get_page(uint32_t addr, int make, page_directory *dir);
 
 #endif

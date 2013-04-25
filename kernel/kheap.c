@@ -3,6 +3,9 @@
 
 extern page_directory *kernel_directory;
 
+uint32_t kheap_end = 0;         // The total size for heap will be 1/8
+                                // of the total RAM.
+
 struct rb_root mem_root;
 uint32_t kheap_cur_end = 0;     // 0 as initial value indicates the
                                 // heap is not initialized yet.
@@ -55,7 +58,7 @@ static mem_node *_find_available_node(struct rb_node *node, uint32_t size,
     if (cur_mem_node->in_use == 0 && align) {
         uint32_t location = (uint32_t)cur_mem_node;
 
-        if ((location + sizeof(mem_node)) & MM_ALIGN_4K) {
+        if ((location + sizeof(mem_node)) & (~MM_ALIGN_4K)) {
             uint32_t offset = PAGE_SIZE -
                 (location + sizeof(mem_node)) % PAGE_SIZE;
             
@@ -118,34 +121,17 @@ static mem_node *find_available_node(uint32_t size, int align) {
     if (node == NULL) {
         // Need to expand the boundary of heap for more memory.
         
+        uint32_t node_size = size + (align ? PAGE_SIZE : 0);
+        uint32_t expand_size = sizeof(mem_node) + node_size;
+
         uint32_t i = kheap_cur_end;
-        uint32_t new_node_end = i + sizeof(mem_node);
+        uint32_t new_end = kheap_cur_end + expand_size;
 
-        if (align && (new_node_end & MM_ALIGN_4K)) {
-            uint32_t offset = PAGE_SIZE - new_node_end % PAGE_SIZE;
-            
-            struct rb_node *last_rb_node = maximum(mem_root.rb_node);
-            if (last_rb_node == NULL) {
-                // TODO: handle this case.
-            }
-            mem_node *last_mem_node = rb_entry(last_rb_node, mem_node, node);
-            
-            last_mem_node->size += offset;
-            kheap_cur_end += offset;
-
-            while (i < kheap_cur_end) {
-                page *pg = get_page(i, 1, kernel_directory);
-                alloc_frame(pg, 1, 1);
-
-                i += PAGE_SIZE;
-            }
-
-            i = kheap_cur_end;
+        if (new_end >= kheap_end) {
+            PANIC("KHEAP OUT OF MEMORY");
         }
 
-        uint32_t new_bound = i + sizeof(mem_node) + size;
-
-        while (i < new_bound) {
+        while (i < new_end) {
             page *pg = get_page(i, 1, kernel_directory);
             alloc_frame(pg, 1, 1);
 
@@ -153,12 +139,14 @@ static mem_node *find_available_node(uint32_t size, int align) {
         }
 
         node = (mem_node *)kheap_cur_end;
-        kheap_cur_end = new_bound;
-
-        node->size = size;
+        node->size = node_size;
+        kheap_cur_end = new_end;
 
         // Insert the new node into the rb tree.
         insert_node_into_rbtree(&node->node);
+
+        // Do another find, this time will find one that fits for sure.
+        node = _find_available_node(&node->node, size, align);
     }
 
     split_node(node, size);
