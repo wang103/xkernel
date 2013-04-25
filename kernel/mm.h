@@ -18,5 +18,6 @@ void alloc_frame(page *page, int is_kernel, int is_writable);
 void free_frame(page *page);
 
 uint32_t kmalloc(uint32_t size, int align, uint32_t *phys);
+void kfree(void *addr);
 
 #endif

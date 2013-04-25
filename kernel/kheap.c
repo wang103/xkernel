@@ -17,10 +17,12 @@ static void insert_node_into_rbtree(struct rb_node *new_node) {
     while (*p) {
         parent = *p;
 
-        if ((uint32_t)(&new_node) < (uint32_t)p) {
+        if ((uint32_t)new_node < (uint32_t)(*p)) {
             p = &(*p)->left;
-        } else {
+        } else if ((uint32_t)new_node > (uint32_t)(*p)) {
             p = &(*p)->right;
+        } else {
+            PANIC("Node already exists");
         }
     }
 
@@ -167,5 +169,54 @@ void *alloc(uint32_t size, int align) {
 }
 
 void free(void *addr) {
-    //TODO: implementation.
+    struct rb_node *n = mem_root.rb_node;
+    uint32_t target_addr = (uint32_t)addr;
+
+    while (n) {
+        mem_node *cur_node = rb_entry(n, mem_node, node);
+        uint32_t cur_node_addr = (uint32_t)((char *)cur_node +
+                sizeof(mem_node));
+
+        if (target_addr < cur_node_addr) {
+            n = n->left;
+        } else if (target_addr > cur_node_addr) {
+            n = n->right;
+        } else {
+            if (cur_node->in_use == 0) {
+                PANIC("Double free");
+            }
+            cur_node->in_use = 0;
+
+            // Try merging with right.
+            struct rb_node *right_n = successor(n);
+            if (right_n) {
+                mem_node *right_node = rb_entry(right_n, mem_node, node);
+
+                if (right_node->in_use == 0) {
+                    cur_node->size += (sizeof(mem_node) + right_node->size);
+
+                    // Remove right node.
+                    rb_erase(right_n, &mem_root);
+                }
+            }
+
+            // Try merging with left.
+            struct rb_node *left_n = predecessor(n);
+            if (left_n) {
+                mem_node *left_node = rb_entry(left_n, mem_node, node);
+                
+                if (left_node->in_use == 0) {
+                    left_node->size += (sizeof(mem_node) + cur_node->size);
+
+                    // Remove node n.
+                    rb_erase(n, &mem_root);
+                }
+            }
+
+            return;
+        }
+    }
+
+    // Address not found.
+    PANIC("Address not allocated before");
 }

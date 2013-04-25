@@ -32,7 +32,7 @@ void test_paging() {
     *ptr = 0;
 }
 
-uint32_t _test_heap(uint32_t size, int align) {
+uint32_t _test_heap_alloc(uint32_t size, int align) {
     uint32_t phys_mem_addr;
     uint32_t vir_mem_addr = kmalloc(size, align, &phys_mem_addr);
 
@@ -52,37 +52,46 @@ uint32_t _test_heap(uint32_t size, int align) {
 void test_heap() {
     uint32_t overhead = sizeof(mem_node);
 
-    uint32_t v0 = _test_heap(4096, 0);
+    uint32_t v0 = _test_heap_alloc(4096, 0);
     
-    uint32_t v1 = _test_heap(4096, 0);
+    uint32_t v1 = _test_heap_alloc(4096, 0);
     if (v0 + 4096 + overhead != v1) {
         PANIC("test_heap: 1");
     }
 
-    uint32_t v2 = _test_heap(4096, 0);
+    uint32_t v2 = _test_heap_alloc(4096, 0);
     if (v1 + 4096 + overhead != v2) {
         PANIC("test_heap: 2");
     }
 
-    uint32_t v3 = _test_heap(4, 0);
+    uint32_t v3 = _test_heap_alloc(4, 0);
     if (v2 + 4096 + overhead != v3) {
         PANIC("test_heap: 3");
     }
 
-    uint32_t v4 = _test_heap(1024, 1);
+    uint32_t v4 = _test_heap_alloc(1024, 1);
     if (v4 < v3 || v4 & (~MM_ALIGN_4K)) {
         PANIC("test_heap: 4");
     }
 
-    uint32_t v5 = _test_heap(2048, 1);
+    uint32_t v5 = _test_heap_alloc(2048, 1);
     if (v5 < v4 || v5 & (~MM_ALIGN_4K)) {
         PANIC("test_heap: 5");
     }
 
-    uint32_t v6 = _test_heap(3072, 0);
+    uint32_t v6 = _test_heap_alloc(3072, 0);
     if (v6 > v4 || !(v6 & (~MM_ALIGN_4K))) {
         PANIC("test_heap: 6");
     }
+
+    // Start freeing.
+    kfree((void *)v3);
+    kfree((void *)v1);
+    kfree((void *)v0);
+    kfree((void *)v6);
+    kfree((void *)v4);
+    kfree((void *)v5);
+    kfree((void *)v2);
 
     monitor_put("Heap tests passed!");
 }

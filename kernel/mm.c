@@ -157,3 +157,7 @@ uint32_t kmalloc(uint32_t size, int align, uint32_t *phys) {
 
     return addr;
 }
+
+void kfree(void *addr) {
+    free(addr);
+}

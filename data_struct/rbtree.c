@@ -287,6 +287,7 @@ void rb_erase(struct rb_node *node, struct rb_root *root) {
     }
 
     int old_color = spliced_out_node->is_red;
+    struct rb_node *temp_parent = spliced_out_node->parent;
     if (spliced_out_node != node) {
         spliced_out_node->parent = node->parent;
         if (node->parent == NULL) {
@@ -308,7 +309,7 @@ void rb_erase(struct rb_node *node, struct rb_root *root) {
         }
 
         spliced_out_node->is_red = node->is_red;
-
+        
         node->parent = NULL;
         node->left = NULL;
         node->right = NULL;
@@ -316,6 +317,6 @@ void rb_erase(struct rb_node *node, struct rb_root *root) {
 
     // Rebalance the tree if needed.
     if (root->rb_node != NULL && old_color == 0) {
-        rb_erase_fixup(child, child->parent, is_left_child, root);
+        rb_erase_fixup(child, temp_parent, is_left_child, root);
     }
 }
