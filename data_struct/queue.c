@@ -102,8 +102,7 @@ unsigned int queue_out(struct queue *queue, void *to, unsigned int len) {
     unsigned int count;
 
     for (count = 0; count < len; count++) {
-        if (queue->out == queue->in) {
-            // Queue is empty.
+        if (queue_is_empty(queue)) {
             break;
         }
 
@@ -136,11 +135,10 @@ unsigned int queue_out_peek(struct queue *queue, void *to, unsigned int len,
     unsigned int temp_out = (queue->out + offset) % queue->total_size;
 
     for (count = 0; count < len; count++) {
-        if (temp_out == queue->in) {
-            // Queue is empty.
+        if (queue_is_empty(queue)) {
             break;
         }
-
+        
         ((char *)to)[count] = ((char *)(queue->data))[temp_out];
 
         temp_out++;
@@ -158,7 +156,7 @@ unsigned int queue_size(struct queue *queue) {
 }
 
 unsigned int queue_enqueued_size(struct queue *queue) {
-    return queue->in - queue->out;
+    return queue->is_full ? queue->total_size : (queue->in - queue->out);
 }
 
 unsigned int queue_avail_size(struct queue *queue) {

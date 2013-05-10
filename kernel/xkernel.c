@@ -98,7 +98,55 @@ void test_heap() {
 }
 
 void test_queue() {
-    
+    unsigned int i;
+
+    struct queue fifo;
+    queue_alloc(&fifo, 32 * sizeof(unsigned int), 1);
+
+    if (!queue_is_empty(&fifo)) {
+        PANIC("test queue: 0");
+    }
+
+    for (i = 0; i < 32; i++) {
+        queue_in(&fifo, &i, sizeof(i));
+    }
+
+    if (queue_enqueued_size(&fifo) != 32 * sizeof(unsigned int)) {
+        PANIC("test queue: 1");
+    }
+
+    if (!queue_is_full(&fifo)) {
+        PANIC("test queue: 5");
+    }
+
+    i = 0;
+    while (queue_enqueued_size(&fifo)) {
+        unsigned int val;
+        
+        queue_out_peek(&fifo, &val, sizeof(unsigned int), 0);
+        if (val != i) {
+            monitor_putdec(val);
+            monitor_put("\n");
+            monitor_putdec(i);
+            monitor_put("\n");
+            PANIC("test queue: 2");
+        }
+
+        queue_out(&fifo, &val, sizeof(unsigned int));
+        if (val != i) {
+            monitor_putdec(val);
+            monitor_put("\n");
+            monitor_putdec(i);
+            monitor_put("\n");
+            PANIC("test queue: 3");
+        }
+
+        i++;
+    }
+
+    if (queue_is_full(&fifo)) {
+        PANIC("test queue: 4");
+    }
 }
 
 typedef struct multiboot_memory_map {
@@ -146,7 +194,7 @@ void kmain(void) {
     //test_interrupts();
     //test_paging();
     //test_heap();
-    test_queue();
+    //test_queue();
 
     // Don't ever exit the kernel.
     for (; ;);
