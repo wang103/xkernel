@@ -6,6 +6,7 @@
 #include "keyboard.h"
 #include "mm.h"
 #include "kheap.h"
+#include "../data_struct/queue.h"
 
 /**
  * Print the welcome message on screen to indicate the kernel has successfully
@@ -96,6 +97,10 @@ void test_heap() {
     monitor_put("Heap tests passed!\n");
 }
 
+void test_queue() {
+    
+}
+
 typedef struct multiboot_memory_map {
     unsigned int size;
     unsigned int base_addr_low, base_addr_high;
@@ -141,6 +146,7 @@ void kmain(void) {
     //test_interrupts();
     //test_paging();
     //test_heap();
+    test_queue();
 
     // Don't ever exit the kernel.
     for (; ;);

@@ -132,7 +132,7 @@ uint32_t kmalloc(uint32_t size, int align, uint32_t *phys) {
     uint32_t addr;
 
     if (kheap_cur_end != 0) {
-        // Heap has been established, and placement_address has been froze.
+        // Heap has been established, and placement_address has been frozen.
         addr = (uint32_t)alloc(size, align);
 
         if (phys) {
