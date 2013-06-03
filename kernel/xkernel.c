@@ -7,6 +7,7 @@
 #include "mm.h"
 #include "kheap.h"
 #include "../data_struct/queue.h"
+#include "../data_struct/map.h"
 
 /**
  * Print the welcome message on screen to indicate the kernel has successfully
@@ -149,6 +150,13 @@ void test_queue() {
     }
 }
 
+void test_map() {
+    struct map map_test;
+    map_init(&map_test);
+
+
+}
+
 typedef struct multiboot_memory_map {
     unsigned int size;
     unsigned int base_addr_low, base_addr_high;
@@ -195,6 +203,7 @@ void kmain(void) {
     //test_paging();
     //test_heap();
     //test_queue();
+    test_map();
 
     // Don't ever exit the kernel.
     for (; ;);

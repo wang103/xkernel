@@ -5,9 +5,7 @@
 #include <assert.h>
 #include <stddef.h>
 #include "linked_list.h"
-#include "queue.h"
 #include "rbtree.h"
-#include "map.h"
 
 typedef struct _os {
     int os_number;
@@ -120,10 +118,7 @@ void test_rbtree() {
 }
 
 void test_map() {
-    struct map map_test;
-    map_init(&map_test);
-
-
+    // Map is not tested here, instead it's done in xkernel.c.
 }
 
 int main() {

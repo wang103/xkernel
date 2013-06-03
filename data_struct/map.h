@@ -11,14 +11,20 @@
  * The mapping is from a unique identification number (UID) to a pointer.
  */
 
+typedef struct _map_node {
+    int id;
+    void *ptr;
+    struct rb_node node;
+} map_node;
+
 struct map {
     struct rb_root map_root;
 };
 
 void map_init(struct map *m);
 
-void add();
-void allocate();
+int add(struct map *m, void *ptr, int id);
+int allocate(struct map *m, void *ptr, int *id);
 void remove();
 int lookup();
 
