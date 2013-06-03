@@ -9,5 +9,5 @@ clean:
 run:
 	./test
 
-test: ../kernel/common.h test.c linked_list.h rbtree.h rbtree.c
-	$(CC) $(CFLAGS) -o $@ test.c rbtree.c
+test: ../kernel/common.h test.c linked_list.h rbtree.h rbtree.c map.h map.c
+	$(CC) $(CFLAGS) -o $@ test.c rbtree.c map.c

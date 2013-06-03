@@ -7,6 +7,7 @@
 #include "linked_list.h"
 #include "queue.h"
 #include "rbtree.h"
+#include "map.h"
 
 typedef struct _os {
     int os_number;
@@ -49,7 +50,7 @@ void test_linked_list() {
 }
 
 void test_queue() {
-
+    // Queue is not tested here, instead it's done in xkernel.c.
 }
 
 typedef struct _character {
@@ -118,12 +119,21 @@ void test_rbtree() {
     free(new_char_1);
 }
 
+void test_map() {
+    struct map map_test;
+    map_init(&map_test);
+
+
+}
+
 int main() {
     test_linked_list();
     
     test_queue();
 
     test_rbtree();
+
+    test_map();
 
     printf("All tests successfully passed!\n");
 
