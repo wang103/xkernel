@@ -61,7 +61,35 @@ int add(struct map *m, void *ptr, int id) {
 int allocate(struct map *m, void *ptr, int *id) {
     int uid = 0;
 
-    // Find an available UID.
+    // Find an available UID by first getting the minimum, and keep checking
+    // current node's successor. If the difference between two consecutive
+    // nodes are greater than 1, then we can use a number in-between as key.
+    struct rb_node *cur_node = minimum(m->map_root.rb_node);
+    struct rb_node *next_node;
+
+    if (cur_node != NULL) {
+        next_node = successor(cur_node);
+
+        map_node *cur_m_node = rb_entry(cur_node, map_node, node);
+        map_node *next_m_node = NULL;
+        
+        while (next_node != NULL) {
+            next_m_node = rb_entry(next_node, map_node, node);
+
+            if ((next_m_node->id - cur_m_node->id) > 1) {
+                uid = cur_m_node->id + 1;
+                break;
+            }
+
+            cur_node = next_node;
+            cur_m_node = rb_entry(cur_node, map_node, node);
+            next_node = successor(cur_node);
+        }
+
+        if (next_node == NULL) {
+            uid = cur_m_node->id + 1;
+        }
+    }
 
     *id = uid;
 
