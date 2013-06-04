@@ -154,7 +154,37 @@ void test_map() {
     struct map map_test;
     map_init(&map_test);
 
+    add(&map_test, (void *)0, 0);
+    add(&map_test, (void *)5, 5);
+    add(&map_test, (void *)6, 6);
+    
+    int actual0 = (int)lookup(&map_test, 0);
+    int actual1 = (int)lookup(&map_test, 5);
+    int actual2 = (int)lookup(&map_test, 6);
 
+    if (actual0 != 0) {
+        PANIC("test map: 0");
+    }
+    if (actual1 != 5) {
+        PANIC("test map: 1");
+    }
+    if (actual2 != 6) {
+        PANIC("test map: 2");
+    }
+
+    int new_id;
+    allocate(&map_test, (void *)1, &new_id);
+
+    if (new_id != 1) {
+        PANIC("test map: 3");
+    }
+    
+    int actual3 = (int)lookup(&map_test, 1);
+    if (actual3 != 1) {
+        PANIC("test map: 4");
+    }
+    
+    map_destroy(&map_test);
 }
 
 typedef struct multiboot_memory_map {
@@ -203,7 +233,7 @@ void kmain(void) {
     //test_paging();
     //test_heap();
     //test_queue();
-    test_map();
+    //test_map();
 
     // Don't ever exit the kernel.
     for (; ;);

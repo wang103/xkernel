@@ -15,7 +15,9 @@ void map_init(struct map *m) {
  */
 void map_destroy(struct map *m) {
     while (!RB_EMPTY_ROOT(&(m->map_root))) {
+        map_node *cur_m_node = rb_entry(m->map_root.rb_node, map_node, node);
         rb_erase(m->map_root.rb_node, &(m->map_root));
+        free(cur_m_node);
     }
 }
 
@@ -82,7 +84,12 @@ int allocate(struct map *m, void *ptr, int *id) {
 
         map_node *cur_m_node = rb_entry(cur_node, map_node, node);
         map_node *next_m_node = NULL;
-        
+    
+        if (cur_m_node->id > 0) {
+            *id = 0;
+            return add(m, ptr, 0);
+        }
+
         while (next_node != NULL) {
             next_m_node = rb_entry(next_node, map_node, node);
 
@@ -102,7 +109,6 @@ int allocate(struct map *m, void *ptr, int *id) {
     }
 
     *id = uid;
-
     return add(m, ptr, uid);
 }
 
@@ -124,6 +130,7 @@ void remove(struct map *m, int id) {
             cur_node = cur_node->right;
         } else {
             rb_erase(cur_node, &(m->map_root));
+            free(m_node);
             return;
         }
     }
