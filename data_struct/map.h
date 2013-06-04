@@ -25,7 +25,7 @@ void map_init(struct map *m);
 
 int add(struct map *m, void *ptr, int id);
 int allocate(struct map *m, void *ptr, int *id);
-void remove();
-int lookup();
+void remove(struct map *m, int id);
+void *lookup(struct map *m, int id);
 
 #endif

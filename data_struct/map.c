@@ -96,10 +96,52 @@ int allocate(struct map *m, void *ptr, int *id) {
     return add(m, ptr, uid);
 }
 
-void remove() {
+/**
+ * remove - remove a mapping.
+ * m:       the map to remove from.
+ * id:      the key to be removed.
+ */
+void remove(struct map *m, int id) {
+    struct rb_node *cur_node = m->map_root.rb_node;
+    map_node *m_node;
 
+    while (cur_node) {
+        m_node = rb_entry(cur_node, map_node, node);
+
+        if (id < m_node->id) {
+            cur_node = cur_node->left;
+        } else if (id > m_node->id) {
+            cur_node = cur_node->right;
+        } else {
+            rb_erase(cur_node, &(m->map_root));
+            return;
+        }
+    }
 }
 
-int lookup() {
-    return -1;
+/**
+ * lookup - lookup a mapping.
+ * @m:      the map to look up with.
+ * @id:     the key to look up.
+ *
+ * Return NULL if the key does not exist, or the mapping could actually be
+ * NULL. Thus user should never map to NULL. Otherwise return the value.
+ */
+void *lookup(struct map *m, int id) {
+    struct rb_node *cur_node = m->map_root.rb_node;
+    map_node *m_node;
+
+    while (cur_node) {
+        m_node = rb_entry(cur_node, map_node, node);
+
+        if (id < m_node->id) {
+            cur_node = cur_node->left;
+        } else if (id > m_node->id) {
+            cur_node = cur_node->right;
+        } else {
+            return m_node->ptr;
+        }
+    }
+
+    return NULL;
 }
