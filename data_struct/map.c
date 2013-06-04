@@ -10,6 +10,16 @@ void map_init(struct map *m) {
 }
 
 /**
+ * map_destroy - destroy a map.
+ * @m:  the map to be freed.
+ */
+void map_destroy(struct map *m) {
+    while (!RB_EMPTY_ROOT(&(m->map_root))) {
+        rb_erase(m->map_root.rb_node, &(m->map_root));
+    }
+}
+
+/**
  * add - add a new mapping.
  * If the key already existed, its value will be overwritten.
  * @m:      the map to add to.

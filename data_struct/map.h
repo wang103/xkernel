@@ -22,6 +22,7 @@ struct map {
 };
 
 void map_init(struct map *m);
+void map_destroy(struct map *m);
 
 int add(struct map *m, void *ptr, int id);
 int allocate(struct map *m, void *ptr, int *id);
