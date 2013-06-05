@@ -6,6 +6,7 @@
 #include "keyboard.h"
 #include "mm.h"
 #include "kheap.h"
+#include "thread.h"
 #include "../data_struct/queue.h"
 #include "../data_struct/map.h"
 
@@ -225,6 +226,7 @@ void kmain(void) {
     init_timer(TIMER_DEFAULT_FREQ_HZ);
     init_keyboard();
     monitor_clear();
+    init_threading();
 
     print_welcome_msg();
     enable_interrupts();

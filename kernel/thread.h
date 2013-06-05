@@ -18,12 +18,6 @@ typedef struct _threat_t {
     struct list_head list;
 } thread_t;
 
-// Declare a list head for a list of threads.
-LIST_HEAD(thread_list);
-
-// Current executing thread.
-thread_t *current_thread = NULL;
-
 thread_t *init_threading();
 thread_t *create_thread(int (*fn)(void *), void *arg, uint32_t *stack);
 void switch_thread();
