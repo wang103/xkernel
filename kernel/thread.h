@@ -6,8 +6,10 @@
 
 typedef struct _threat_t {
     uint32_t id;
+
     uint32_t esp;
     uint32_t ebp;
+
     uint32_t eax;
     uint32_t ebx;
     uint32_t ecx;
@@ -22,6 +24,6 @@ void init_threading();
 thread_t *create_thread(int (*fn)(void *), void *arg, uint32_t *stack);
 void exit_cur_thread();
 void exit_thread(thread_t *thread);
-void switch_thread();
+void switch_thread(thread_t *thread);
 
 #endif

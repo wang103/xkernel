@@ -74,5 +74,24 @@ void exit_thread(thread_t *thread) {
  * Should be called periodically by the timer, but also could be triggered due
  * to other reasons, such as task IO or task completion.
  */
-void switch_thread() {
+void switch_thread(thread* thread) {
+    // Save current thread's registers.
+    asm volatile ("mov %%esp, %0" : "=r" (current_thread->esp));
+    asm volatile ("mov %%ebp, %0" : "=r" (current_thread->ebp));
+    asm volatile ("mov %%eax, %0" : "=r" (current_thread->eax));
+    asm volatile ("mov %%ebx, %0" : "=r" (current_thread->ebx));
+    asm volatile ("mov %%ecx, %0" : "=r" (current_thread->ecx));
+    asm volatile ("mov %%edx, %0" : "=r" (current_thread->edx));
+    asm volatile ("mov %%esi, %0" : "=r" (current_thread->esi));
+    asm volatile ("mov %%edi, %0" : "=r" (current_thread->edi));
+
+    // Retrieve next thread's registers.
+    asm volatile ("mov %0, %%edi" : : "r" (thread->edi));
+    asm volatile ("mov %0, %%esi" : : "r" (thread->esi));
+    asm volatile ("mov %0, %%edx" : : "r" (thread->edx));
+    asm volatile ("mov %0, %%ecx" : : "r" (thread->ecx));
+    asm volatile ("mov %0, %%ebx" : : "r" (thread->ebx));
+    asm volatile ("mov %0, %%eax" : : "r" (thread->eax));
+    asm volatile ("mov %0, %%ebp" : : "r" (thread->ebp));
+    asm volatile ("mov %0, %%esp" : : "r" (thread->esp));
 }
