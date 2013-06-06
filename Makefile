@@ -1,6 +1,6 @@
 SOURCES=loader.o desc_tables.o interrupt.o pic.o xkernel.o common.o monitor.o \
 		descriptor_tables.o isr.o timer.o keyboard.o mm.o page.o rbtree.o \
-		queue.o map.o kheap.o thread.o
+		queue.o map.o kheap.o thread.o scheduler.o
 
 CC=gcc
 CFLAGS=-Wall -Wextra -nostdlib -nostartfiles -nodefaultlibs -nostdinc \
@@ -40,7 +40,7 @@ pic.o: arch/x86/pic.s
 	$(AS) $(ASFLAGS) -o $@ arch/x86/pic.s
 
 xkernel.o: include/multiboot.h kernel/xkernel.c kernel/common.h \
-	kernel/monitor.h kernel/mm.h kernel/kheap.h kernel/thread.h \
+	kernel/monitor.h kernel/mm.h kernel/kheap.h kernel/scheduler.h \
 	data_struct/queue.h data_struct/map.h
 	$(CC) $(CFLAGS) -o $@ kernel/xkernel.c
 
@@ -86,3 +86,6 @@ kheap.o: data_struct/rbtree.h kernel/kheap.h kernel/kheap.c kernel/common.h
 thread.o: kernel/thread.h kernel/thread.c kernel/common.h \
 	data_struct/linked_list.h
 	$(CC) $(CFLAGS) -o $@ kernel/thread.c
+
+scheduler.o: kernel/scheduler.h kernel/scheduler.c kernel/thread.h
+	$(CC) $(CFLAGS) -o $@ kernel/scheduler.c

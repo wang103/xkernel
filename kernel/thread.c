@@ -74,7 +74,7 @@ void exit_thread(thread_t *thread) {
  * Should be called periodically by the timer, but also could be triggered due
  * to other reasons, such as task IO or task completion.
  */
-void switch_thread(thread* thread) {
+void switch_thread(thread_t* thread) {
     // Save current thread's registers.
     asm volatile ("mov %%esp, %0" : "=r" (current_thread->esp));
     asm volatile ("mov %%ebp, %0" : "=r" (current_thread->ebp));
